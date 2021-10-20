@@ -5,6 +5,7 @@ cli = FlaskGroup()
 
 @cli.command("create_su")
 def create_db():
+    """Creates a super user"""
     user = User(name="Gideon Yeboah Asante", username="kwame",email="kwame@kmail.com",is_super_user=True)
     db.session.add(user)
     db.session.commit()
