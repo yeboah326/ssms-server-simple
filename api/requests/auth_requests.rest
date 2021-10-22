@@ -1,0 +1,38 @@
+@baseURL={{$dotenv baseURL}}
+
+# @name auth_hello
+GET {{baseURL}}/auth/hello
+
+###
+
+# @name auth_create_new_token
+POST {{baseURL}}/auth/token
+Content-Type: application/json
+
+{
+    "username":"kwame_yeboah",
+    "password":"123456"
+}
+
+###
+
+@access_token = {{auth_create_new_token.response.body.token}}
+
+
+# @name auth_create_new_user
+POST {{baseURL}}/auth/register
+Content-Type: application/json
+
+{
+    "name":"Dummy User",
+    "username": "dummy_u",
+    "password": "123456",
+    "email": "dummy@dmail.com",
+    "user_type": "admin"
+}
+
+###
+
+# @name protected
+GET {{baseURL}}/auth/protected
+Authorization: Bearer {{access_token}}

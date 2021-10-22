@@ -25,7 +25,9 @@ jwt = JWTManager(app)
 # Import blueprints
 from api.auth.controllers import auth
 from api.expenditure.controllers import expenditure
+from api.school.controllers import school
 
 # Registering the blueprints
 app.register_blueprint(auth)
 app.register_blueprint(expenditure)
+app.register_blueprint(school)

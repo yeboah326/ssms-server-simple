@@ -15,9 +15,6 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(120), nullable=False)
     public_id = db.Column(db.String(36), unique=True, default=lambda: str(uuid4()))
-    is_admin = db.Column(db.Boolean, default=False)
-    is_auditor = db.Column(db.Boolean, default=False)
-    is_super_user = db.Column(db.Boolean, default=False)
 
     def __repr__(self) -> str:
         return (
@@ -49,5 +46,17 @@ class User(db.Model):
     
     @classmethod
     def check_user_credentials(cls, username, password):
-
         return cls.query.filter_by(username=username,password=password)
+
+class SuperUser(User):
+    __tablename__ = "ssms_superuser"
+    id = db.Column(db.Integer, db.ForeignKey("ssms_user.id") ,primary_key=True, autoincrement=True)
+    is_super_user = db.Column(db.Boolean, default=True)
+
+class SchoolUser(User):
+    __tablename__ = "ssms_schooluser"
+    id = db.Column(db.Integer, db.ForeignKey("ssms_user.id") ,primary_key=True, autoincrement=True)
+    school_id = db.Column(db.Integer, db.ForeignKey('ssms_school.id'), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    is_auditor = db.Column(db.Boolean, default=False)
+    is_teacher = db.Column(db.Boolean, default=False)

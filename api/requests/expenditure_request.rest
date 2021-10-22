@@ -1,0 +1,7 @@
+@baseURL={{$dotenv baseURL}}
+
+# Expenditure Hello Route
+GET {{baseURL}}/expenditure/hello
+
+
+GET {{baseURL}}/expenditure/hello

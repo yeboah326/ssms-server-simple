@@ -1,7 +1,8 @@
 from flask import Blueprint, request
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_current_user
+from flask_jwt_extended.utils import get_jwt
 from api import db
-from api.auth.models import User
+from api.auth.models import SuperUser, User
 
 auth = Blueprint("auth", __name__,url_prefix="/api/auth")
 
@@ -20,10 +21,10 @@ def auth_create_new_token():
         if password_correct:
             access_token = create_access_token(identity=user.public_id)
             return {"token":access_token, "user_id":user.public_id}, 200
-        return {"message": "Invalid credentials"}, 401
+        return {"message": "Username or password is invalid"}, 401
 
 @auth.route("/register", methods=["POST"])
-def create_new_user_account():
+def auth_create_new_user_account():
     data = request.json
 
     user_type = data["user_type"]
@@ -52,6 +53,11 @@ def create_new_user_account():
 @auth.route("/protected")
 @jwt_required()
 def protected():
+    # su = SuperUser.query.filter_by(id=User.query.filter_by(public_id))
+    
+    su = SuperUser.query.filter_by(id=User.query.filter_by(public_id=get_jwt_identity()).first().id)
+    if not su:
+        return {"message":"User does not have the right priveleges to perform specified actions"}
     users = User.query.all()
     user_list = []
     for user in users:

@@ -1,0 +1,6 @@
+@baseURL={{$dotenv baseURL}}
+
+
+GET {{baseURL}}/school/hello
+
+###
