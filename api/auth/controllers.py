@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_current_user
 from flask_jwt_extended.utils import get_jwt
 from api import db
-from api.auth.models import SuperUser, User
+from api.auth.models import SchoolUser, SuperUser, User
 
 auth = Blueprint("auth", __name__,url_prefix="/api/auth")
 
@@ -34,21 +34,27 @@ def auth_create_new_user_account():
     if email_exists:
         return {"message": "A user with this email already exists"}, 401
 
-    user = User(username=data["username"],name=data["name"],email=data["email"])
-    user.password = data["password"]
 
     # Assign the user type to the temporary instance created
-    if user_type == "admin":
-        user.is_admin = True
-    elif user_type == "super_user":
-        user.is_super_user = True
+    if user_type == "super_user":
+        super_user = SuperUser(username=data["username"],name=data["name"],email=data["email"])
+        super_user.password = data["password"]
+        db.session.add(super_user)
+        db.session.commit()
+    elif user_type == "admin":
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_admin=True)
+        db.session.add(school_user)
+        db.session.commit()
     elif user_type == "auditor":
-        user.is_auditor = True
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_auditor=True)
+        db.session.add(school_user)
+        db.session.commit()
+    elif user_type == "teacher":
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_teacher=True)
+        db.session.add(school_user)
+        db.session.commit()
 
-    db.session.add(user)
-    db.session.commit()
-
-    return {"message": "User created successfully", "user": User.find_by_email(data)}, 200
+    return {"message": "User created successfully", "user": User.find_by_email(data["email"]).name}, 200
 
 @auth.route("/protected")
 @jwt_required()

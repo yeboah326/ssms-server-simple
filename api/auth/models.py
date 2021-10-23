@@ -18,7 +18,7 @@ class User(db.Model):
 
     def __repr__(self) -> str:
         return (
-            f"<User {self.email}, public_id={self.public_id}, is_admin={self.is_admin}, is_auditor={self.is_auditor}>"
+            f"<User {self.email}, public_id={self.public_id}>"
         )
 
     @property

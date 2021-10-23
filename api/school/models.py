@@ -20,3 +20,12 @@ class School(db.Model):
     @classmethod
     def retrieve_all_expenditures(cls, id):
         return cls.query.filter_by(id).first().expenditures
+
+    @classmethod
+    def modify_school_name(cls, new_name):
+        pass
+
+
+    @classmethod
+    def modify_school_location(cls, new_location):
+        pass
