@@ -6,12 +6,19 @@ from api.auth.models import SchoolUser, SuperUser, User
 
 auth = Blueprint("auth", __name__,url_prefix="/api/auth")
 
-@auth.route("/hello")
+@auth.route("/hello", methods=["GET"])
 def hello():
     return {"message":"Auth blueprint is working"}, 200
 
 @auth.route("/token", methods=["POST"])
 def auth_create_new_token():
+    """auth_create_new_token
+    API Data Format:
+        username: Username of the user trying to login
+        password: Password of the user trying to login
+    Returns:
+        [type]: [description]
+    """
     data = request.json
 
     # Checks whether a user with the given username exists
@@ -42,15 +49,18 @@ def auth_create_new_user_account():
         db.session.add(super_user)
         db.session.commit()
     elif user_type == "admin":
-        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_admin=True)
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_admin=True, school_id=data["school_id"])
+        school_user.password = data["password"]
         db.session.add(school_user)
         db.session.commit()
     elif user_type == "auditor":
-        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_auditor=True)
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_auditor=True, school_id=data["school_id"])
+        school_user.password = data["password"]
         db.session.add(school_user)
         db.session.commit()
     elif user_type == "teacher":
-        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_teacher=True)
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_teacher=True, school_id=data["school_id"])
+        school_user.password = data["password"]
         db.session.add(school_user)
         db.session.commit()
 
