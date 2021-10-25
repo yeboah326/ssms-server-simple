@@ -21,7 +21,7 @@ def test_school_create_successful(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-        
+
     response = client.post(
         "api/school/create",
         json={
@@ -42,7 +42,7 @@ def test_create_school_already_exists(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     create_school(app, client, super_user["token"])
 
@@ -70,7 +70,7 @@ def test_school_modify_by_id_does_not_exist(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     response = client.post(
         "api/school/modify",
         json={
@@ -90,10 +90,10 @@ def test_school_modify_by_id_new_name_already_exists(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     school = create_school(app, client, super_user["token"])
-    
+
     response = client.post(
         "api/school/modify",
         json={
@@ -113,7 +113,7 @@ def test_school_modify_by_id_successful(app,client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     school = create_school(app, client, super_user["token"])
 
@@ -142,7 +142,7 @@ def test_school_delete_by_id_does_not_exist(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     response = client.post(
         "api/school/delete",
         json={
@@ -160,7 +160,7 @@ def test_school_delete_by_id_successful(app,client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     school = create_school(app, client, super_user["token"])
 

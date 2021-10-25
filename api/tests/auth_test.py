@@ -21,7 +21,7 @@ def test_auth_create_super_user(client):
             "password": "123456",
             "email": "super_u@user.com",
             "user_type": "super_user"
-        }    
+        }
     )
 
     user = SuperUser.find_by_username("super_u")
@@ -35,7 +35,7 @@ def test_auth_create_admin(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     school = create_school(app, client, super_user["token"])
 
@@ -65,7 +65,7 @@ def test_auth_create_auditor(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     school = create_school(app, client, super_user["token"])
 
@@ -96,7 +96,7 @@ def test_auth_create_teacher(app, client):
 
     # Create new super user
     super_user = create_new_super_user(app,client)
-    
+
     # Send request to create a new school
     school = create_school(app, client, super_user["token"])
 
@@ -115,7 +115,7 @@ def test_auth_create_teacher(app, client):
     )
 
     user = SchoolUser.find_by_username("teacher_u")
-    
+
     assert response.status_code == 200
     assert response.json["message"] == "User created successfully"
     assert user.email == "teacher_u@user.com"
