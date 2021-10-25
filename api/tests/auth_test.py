@@ -26,6 +26,7 @@ def test_auth_create_super_user(client):
 
     user = SuperUser.find_by_username("super_u")
 
+    assert response.status_code == 200
     assert user.email == "super_u@user.com"
     assert response.json["message"] == "User created successfully"
 
@@ -89,7 +90,6 @@ def test_auth_create_auditor(app, client):
     assert response.json["message"] == "User created successfully"
     assert user.email == "auditor_u@user.com"
 
-
 def test_auth_create_teacher(app, client):
     # Reset the database
     db_reset()
@@ -119,3 +119,33 @@ def test_auth_create_teacher(app, client):
     assert response.status_code == 200
     assert response.json["message"] == "User created successfully"
     assert user.email == "teacher_u@user.com"
+
+def test_auth_create_owner(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_new_super_user(app,client)
+
+    # Send request to create a new school
+    school = create_school(app, client, super_user["token"])
+
+    # Send request to create a teacher account for school
+    response = client.post(
+        "api/auth/register",
+        json={
+            "name":"Owner User",
+            "username": "owner_u",
+            "password": "123456",
+            "email": "owner_u@user.com",
+            "school_id": f"{school['school'].id}",
+            "user_type": "owner"
+        },
+        headers={"Authorization": f"Bearer {super_user['token']}"},
+    )
+
+    user = SchoolUser.find_by_username("owner_u")
+
+    assert response.status_code == 200
+    assert response.json["message"] == "User created successfully"
+    assert user.email == "owner_u@user.com"
