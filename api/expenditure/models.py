@@ -5,5 +5,4 @@ class Expenditure(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String(255))
     amount = db.Column(db.Float)
-    school_id = db.Column(db.Integer, db.ForeignKey('ssms_school.id'), nullable=False)
-
+    academic_year_id = db.Column(db.Integer, db.ForeignKey("ssms_academic_year.id"), nullable=False)
