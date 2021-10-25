@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api import db
 from api.auth.models import SuperUser
-from api.school.models import School
+from api.school.models import School, AcademicYear, Class
 
 school = Blueprint("school", __name__, url_prefix="/api/school")
 
@@ -33,7 +33,7 @@ def school_create():
 
     if school_exists:
         return {"message":"A school with that name already exists"}, 401
-    
+
     # Create an instance of the school model
     school = School(name=data["name"], location=data["location"])
 
@@ -48,7 +48,7 @@ def school_create():
 def school_modify_by_id():
     """school_modify_by_id
     API Data Format:
-        id: ID of the current school to be changed 
+        id: ID of the current school to be changed
         new_name: Name to be assigned to the current school
         new_location: Location to be assigned to current school
     Returns:
@@ -60,19 +60,19 @@ def school_modify_by_id():
     school_exists = School.find_by_id(data["id"])
     if not school_exists:
         return {"message": "A school with the given ID does not exist"}, 401
-    
+
     # Check if a school with the new name exists
     school_with_new_name_exists = School.find_by_name(data["new_name"])
     if school_with_new_name_exists:
         return {"message": "A school with that name already exists"}, 401
-    
+
     school = School.find_by_id(data["id"])
 
     if data["new_name"]:
         school.name = data["new_name"]
     if data["new_location"]:
         school.locatioon = data["new_location"]
-    
+
     return {"message": "School updated successfully"}, 200
 
 @school.route("/delete",methods=["POST"])
