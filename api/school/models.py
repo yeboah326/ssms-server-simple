@@ -27,7 +27,6 @@ class AcademicYear(db.Model):
     school_id = db.Column(db.Integer, db.ForeignKey("ssms_school.id"), nullable=False)
     classes = db.relationship("Class", backref="academic_year", lazy=True)
     expenditures = db.relationship("Expenditure", backref="academic_year", lazy=True)
-    fees = db.relationship("Fees", backref="academic_year", lazy=True)
 
     def __repr__(self) -> str:
         return f"<School: {School.find_by_id(self.school_id).name}, Year: {self.name}>"
@@ -42,6 +41,7 @@ class Class(db.Model):
     name = db.Column(db.String(30), nullable=False)
     academic_year_id = db.Column(db.Integer, db.ForeignKey("ssms_academic_year.id"), nullable=False)
     students = db.relationship("Student", backref="class", lazy=True)
+    fees = db.relationship("Fees", backref="class", lazy=True)
 
     def __repr__(self) -> str:
         return f"<Year: {AcademicYear.find_by_id(self.academic_year_id)}, Class: {self.name}>"

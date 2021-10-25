@@ -24,14 +24,14 @@ class User(db.Model):
     @property
     def password(self):
         raise AttributeError("password: write-only field")
-    
+
     @password.setter
     def password(self, password) -> None:
         self.password_hash = generate_password_hash(password)
-    
+
     def check_password(self, password) -> bool:
         return check_password_hash(self.password_hash, password)
-    
+
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
@@ -39,11 +39,11 @@ class User(db.Model):
     @classmethod
     def find_by_username(cls, username):
         return cls.query.filter_by(username=username).first()
-    
+
     @classmethod
     def find_by_public_id(cls, public_id):
         return cls.query.filter_by(public_id=public_id).first()
-    
+
     @classmethod
     def check_user_credentials(cls, username, password):
         return cls.query.filter_by(username=username,password=password)
@@ -57,6 +57,7 @@ class SchoolUser(User):
     __tablename__ = "ssms_schooluser"
     id = db.Column(db.Integer, db.ForeignKey("ssms_user.id") ,primary_key=True, autoincrement=True)
     school_id = db.Column(db.Integer, db.ForeignKey('ssms_school.id'), nullable=False)
+    is_owner = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)
     is_auditor = db.Column(db.Boolean, default=False)
     is_teacher = db.Column(db.Boolean, default=False)
