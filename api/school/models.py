@@ -41,7 +41,6 @@ class Class(db.Model):
     name = db.Column(db.String(30), nullable=False)
     academic_year_id = db.Column(db.Integer, db.ForeignKey("ssms_academic_year.id"), nullable=False)
     students = db.relationship("Student", backref="class", lazy=True)
-    fees = db.relationship("Fees", backref="class", lazy=True)
 
     def __repr__(self) -> str:
         return f"<Year: {AcademicYear.find_by_id(self.academic_year_id)}, Class: {self.name}>"
