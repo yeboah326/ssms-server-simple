@@ -63,16 +63,18 @@ def auth_create_new_user_account():
         school_user.password = data["password"]
         db.session.add(school_user)
         db.session.commit()
+    elif user_type == "owner":
+        school_user = SchoolUser(username=data["username"],name=data["name"],email=data["email"], is_owner=True, school_id=data["school_id"])
+        school_user.password = data["password"]
+        db.session.add(school_user)
+        db.session.commit()
 
     return {"message": "User created successfully", "user": User.find_by_email(data["email"]).name}, 200
 
 @auth.route("/protected")
 @jwt_required()
 def protected():
-    # su = SuperUser.query.filter_by(id=User.query.filter_by(public_id))
-    
-    su = SuperUser.query.filter_by(id=User.query.filter_by(public_id=get_jwt_identity()).first().id)
-    if not su:
+    if not SuperUser.user_is_super_user(public_id=get_jwt_identity()):
         return {"message":"User does not have the right priveleges to perform specified actions"}
     users = User.query.all()
     user_list = []
