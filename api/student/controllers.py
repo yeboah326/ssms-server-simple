@@ -3,6 +3,12 @@ from api.student.models import Student
 
 student = Blueprint("student", __name__, url_prefix="/api/student")
 
+
 @student.route("/hello")
 def student_hello():
-    return {"message":"Student blueprint working"}
+    return {"message": "Student blueprint working"}
+
+
+# TODO: Create new student [Admin]
+# TODO: Modify student [SuperUser / Owner]
+# TODO: Delete student [SuperUser / Owner]
