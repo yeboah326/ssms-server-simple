@@ -1,13 +1,13 @@
 from api.auth.models import SchoolUser, SuperUser
 from api.tests.utils import db_reset, create_school, create_new_super_user
 
+
 def test_auth_hello(client):
-    response = client.get(
-        "api/auth/hello"
-    )
+    response = client.get("api/auth/hello")
 
     assert response.status_code == 200
     assert response.json["message"] == "Auth blueprint is working"
+
 
 def test_auth_create_super_user(client):
     db_reset()
@@ -16,12 +16,12 @@ def test_auth_create_super_user(client):
     response = client.post(
         "/api/auth/register",
         json={
-            "name":"Super User",
+            "name": "Super User",
             "username": "super_u",
             "password": "123456",
             "email": "super_u@user.com",
-            "user_type": "super_user"
-        }
+            "user_type": "super_user",
+        },
     )
 
     user = SuperUser.find_by_username("super_u")
@@ -30,25 +30,26 @@ def test_auth_create_super_user(client):
     assert user.email == "super_u@user.com"
     assert response.json["message"] == "User created successfully"
 
+
 def test_auth_create_admin(app, client):
     # Reset the database
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app,client)
+    super_user = create_new_super_user(app, client)
 
     # Send request to create a new school
-    school = create_school(app, client, super_user["token"])
+    school = create_school(client, super_user["token"])
 
     # Send request to create admin for school
     response = client.post(
         "api/auth/register",
         json={
-            "name":"Admin User",
+            "name": "Admin User",
             "username": "admin_u",
             "password": "123456",
             "email": "admin_u@user.com",
-            "school_id": f"{school['school'].id}",
+            "school_id": f"{school.id}",
             "user_type": "admin",
         },
         headers={"Authorization": f"Bearer {super_user['token']}"},
@@ -60,26 +61,27 @@ def test_auth_create_admin(app, client):
     assert response.json["message"] == "User created successfully"
     assert user.email == "admin_u@user.com"
 
+
 def test_auth_create_auditor(app, client):
     # Reset the database
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app,client)
+    super_user = create_new_super_user(app, client)
 
     # Send request to create a new school
-    school = create_school(app, client, super_user["token"])
+    school = create_school(client, super_user["token"])
 
     # Send request to create an auditor account for school
     response = client.post(
         "api/auth/register",
         json={
-            "name":"Auditor User",
+            "name": "Auditor User",
             "username": "auditor_u",
             "password": "123456",
             "email": "auditor_u@user.com",
-            "school_id": f"{school['school'].id}",
-            "user_type": "auditor"
+            "school_id": f"{school.id}",
+            "user_type": "auditor",
         },
         headers={"Authorization": f"Bearer {super_user['token']}"},
     )
@@ -90,26 +92,27 @@ def test_auth_create_auditor(app, client):
     assert response.json["message"] == "User created successfully"
     assert user.email == "auditor_u@user.com"
 
+
 def test_auth_create_teacher(app, client):
     # Reset the database
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app,client)
+    super_user = create_new_super_user(app, client)
 
     # Send request to create a new school
-    school = create_school(app, client, super_user["token"])
+    school = create_school(client, super_user["token"])
 
     # Send request to create a teacher account for school
     response = client.post(
         "api/auth/register",
         json={
-            "name":"Teacher User",
+            "name": "Teacher User",
             "username": "teacher_u",
             "password": "123456",
             "email": "teacher_u@user.com",
-            "school_id": f"{school['school'].id}",
-            "user_type": "teacher"
+            "school_id": f"{school.id}",
+            "user_type": "teacher",
         },
         headers={"Authorization": f"Bearer {super_user['token']}"},
     )
@@ -120,26 +123,27 @@ def test_auth_create_teacher(app, client):
     assert response.json["message"] == "User created successfully"
     assert user.email == "teacher_u@user.com"
 
+
 def test_auth_create_owner(app, client):
     # Reset the database
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app,client)
+    super_user = create_new_super_user(app, client)
 
     # Send request to create a new school
-    school = create_school(app, client, super_user["token"])
+    school = create_school(client, super_user["token"])
 
     # Send request to create a teacher account for school
     response = client.post(
         "api/auth/register",
         json={
-            "name":"Owner User",
+            "name": "Owner User",
             "username": "owner_u",
             "password": "123456",
             "email": "owner_u@user.com",
-            "school_id": f"{school['school'].id}",
-            "user_type": "owner"
+            "school_id": f"{school.id}",
+            "user_type": "owner",
         },
         headers={"Authorization": f"Bearer {super_user['token']}"},
     )
