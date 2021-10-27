@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api import db
+from api.auth.utils import current_user_type
 from api.auth.models import SuperUser, SchoolUser, User
 from api.school.models import School, AcademicYear, Class
 
@@ -29,9 +30,8 @@ def school_create():
     Returns:
         [type]: [description]
     """
-    super_user = SuperUser.find_by_public_id(get_jwt_identity())
 
-    if not super_user:
+    if not current_user_type(get_jwt_identity(), ["super_user"]):
         return {"message": "User is not authorized to create a school"}
 
     data = request.json
@@ -51,6 +51,7 @@ def school_create():
     return {"message": f"{data['name']} created successfully"}, 200
 
 
+# TODO: Check the user type before performing the operation
 @school.route("/modify", methods=["POST"])
 @jwt_required()
 def school_modify_by_id():
@@ -134,10 +135,7 @@ def school_create_academic_year():
     data = request.json
 
     # Check whether user is super_user or owner
-    super_user = SuperUser.user_is_super_user(public_id=get_jwt_identity())
-    owner = SchoolUser.user_is_owner(public_id=get_jwt_identity())
-
-    if not (super_user or owner):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
         }, 401
@@ -167,10 +165,7 @@ def school_delete_academic_year():
     data = request.json
 
     # Check whether user is super_user or owner
-    super_user = SuperUser.user_is_super_user(public_id=get_jwt_identity())
-    owner = SchoolUser.user_is_owner(public_id=get_jwt_identity())
-
-    if not (super_user or owner):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
         }, 401
@@ -205,10 +200,7 @@ def school_modify_academic_year():
     data = request.json
 
     # Check whether user is super_user or owner
-    super_user = SuperUser.user_is_super_user(public_id=get_jwt_identity())
-    owner = SchoolUser.user_is_owner(public_id=get_jwt_identity())
-
-    if not (super_user or owner):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
         }, 401
@@ -264,10 +256,7 @@ def school_create_class():
     data = request.json
 
     # Check whether user is super_user or owner
-    super_user = SuperUser.user_is_super_user(public_id=get_jwt_identity())
-    owner = SchoolUser.user_is_owner(public_id=get_jwt_identity())
-
-    if not (super_user or owner):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
         }, 401
@@ -298,10 +287,7 @@ def school_delete_class():
     data = request.json
 
     # Check whether user is super_user or owner
-    super_user = SuperUser.user_is_super_user(public_id=get_jwt_identity())
-    owner = SchoolUser.user_is_owner(public_id=get_jwt_identity())
-
-    if not (super_user or owner):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
         }, 401
@@ -334,10 +320,7 @@ def school_modify_class():
     data = request.json
 
     # Check whether user is super_user or owner
-    super_user = SuperUser.user_is_super_user(public_id=get_jwt_identity())
-    owner = SchoolUser.user_is_owner(public_id=get_jwt_identity())
-
-    if not (super_user or owner):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
         }, 401

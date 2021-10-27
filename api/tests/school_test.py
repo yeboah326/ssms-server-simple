@@ -1,7 +1,5 @@
-from werkzeug.datastructures import Headers
 from api.school.models import AcademicYear, School, Class
-from api.tests.utils import (
-    create_new_admin,
+from api.tests.utils_test import (
     create_new_owner,
     create_new_super_user,
     create_new_teacher,
@@ -112,7 +110,6 @@ def test_school_modify_by_id_new_name_already_exists(app, client):
     assert response.json["message"] == "A school with that name already exists"
 
 
-# TODO: Check if the new name of the school is shown in the database
 def test_school_modify_by_id_successful(app, client):
     # Reset the database
     db_reset()
@@ -133,8 +130,11 @@ def test_school_modify_by_id_successful(app, client):
         headers={"Authorization": f"Bearer {super_user['token']}"},
     )
 
+    school = School.find_by_id(school.id)
+
     assert response.status_code == 200
     assert response.json["message"] == "School updated successfully"
+    assert school.name == "Akropong School For Disabilities"
 
 
 # --------------------------------------------------------------------
