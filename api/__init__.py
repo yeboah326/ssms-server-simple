@@ -3,12 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import (
-    JWTManager,
-    create_access_token,
-    get_jwt_identity,
-    jwt_required,
-)
+from flask_jwt_extended import JWTManager
 
 # Application instance
 app = Flask(__name__)
