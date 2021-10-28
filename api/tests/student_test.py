@@ -4,10 +4,10 @@ from api.tests.utils_test import (
     db_reset,
     create_academic_year,
     create_class,
-    create_new_super_user,
-    create_new_owner,
+    create_super_user,
+    create_owner,
     create_school,
-    create_new_teacher,
+    create_teacher,
 )
 from api.student.models import Student
 
@@ -29,13 +29,13 @@ def test_student_create_new(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -66,16 +66,16 @@ def test_student_create_new_unauthorized(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create new teacher
-    teacher = create_new_teacher(client, school_id=school.id)
+    teacher = create_teacher(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -109,13 +109,13 @@ def test_student_modify_by_id(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -148,13 +148,13 @@ def test_student_modify_by_id_non_existent(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -183,13 +183,13 @@ def test_student_modify_by_id_unauthorized(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    teacher = create_new_teacher(client, school_id=school.id)
+    teacher = create_teacher(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, super_user, school)
@@ -226,13 +226,13 @@ def test_student_delete_by_id(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -260,13 +260,13 @@ def test_student_delete_by_id_non_existent(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -291,13 +291,13 @@ def test_student_delete_by_id_unauthorized(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    teacher = create_new_teacher(client, school_id=school.id)
+    teacher = create_teacher(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, super_user, school)
@@ -330,13 +330,13 @@ def test_student_get_all_by_class_id(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    owner = create_new_owner(client, school_id=school.id)
+    owner = create_owner(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
@@ -361,13 +361,13 @@ def test_student_get_all_by_class_id_unauthorized(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
 
     # Create new owner
-    teacher = create_new_teacher(client, school_id=school.id)
+    teacher = create_teacher(client, school_id=school.id)
 
     # Create an academic year
     academic_year = create_academic_year(client, super_user, school)

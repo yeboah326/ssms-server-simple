@@ -28,7 +28,8 @@ def school_create():
         location: Location of school to be created
 
     Returns:
-        [type]: [description]
+        dict: Response body
+        Integer: Status Code
     """
 
     if not current_user_type(get_jwt_identity(), ["super_user"]):
@@ -63,14 +64,15 @@ def school_modify_by_id():
         new_location: Location to be assigned to current school
 
     Returns:
-        [type]: [description]
+        dict: Response body
+        Integer: Status Code
     """
     data = request.json
 
     # Check if the school exists
     school_exists = School.find_by_id(data["id"])
     if not school_exists:
-        return {"message": "A school with the given ID does not exist"}, 401
+        return {"message": "A school with the given ID does not exist"}, 404
 
     # Check if a school with the new name exists
     school_with_new_name_exists = School.find_by_name(data["new_name"])
@@ -98,7 +100,8 @@ def school_delete_by_id():
         id: ID of school to be deleted
 
     Returns:
-        [type]: [description]
+        dict: Response body
+        Integer: Status Code
     """
     data = request.json
 

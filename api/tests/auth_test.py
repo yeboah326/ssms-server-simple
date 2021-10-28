@@ -1,5 +1,5 @@
 from api.auth.models import SchoolUser, SuperUser
-from api.tests.utils import db_reset, create_school, create_new_super_user
+from api.tests.utils_test import db_reset, create_school, create_super_user
 
 
 def test_auth_hello(client):
@@ -36,7 +36,7 @@ def test_auth_create_admin(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
@@ -67,7 +67,7 @@ def test_auth_create_auditor(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
@@ -98,7 +98,7 @@ def test_auth_create_teacher(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
@@ -129,7 +129,7 @@ def test_auth_create_owner(app, client):
     db_reset()
 
     # Create new super user
-    super_user = create_new_super_user(app, client)
+    super_user = create_super_user(app, client)
 
     # Send request to create a new school
     school = create_school(client, super_user["token"])
