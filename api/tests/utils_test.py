@@ -1,13 +1,20 @@
+from datetime import datetime
 from api import db
 from api.auth.models import SchoolUser, User, SuperUser
 from api.school.models import AcademicYear, Class, School
+from api.student.models import Student
+from api.expenditure.models import Expenditure
+from api.fees.models import Fees
 
 
 def db_reset():
     """db_reset() - Drops all the data in all tables before the test runs"""
     SuperUser.query.delete()
     SchoolUser.query.delete()
+    Fees.query.delete()
+    Student.query.delete()
     Class.query.delete()
+    Expenditure.query.delete()
     AcademicYear.query.delete()
     School.query.delete()
     User.query.delete()
@@ -28,7 +35,7 @@ def create_school(client, super_user_token):
     return school
 
 
-def create_new_super_user(app, client):
+def create_super_user(app, client):
     # Create and store user
     client.post(
         "/api/auth/register",
@@ -99,7 +106,7 @@ def create_new_auditor(client, school_id):
     return {"user": auditor, "token": response.json["token"]}
 
 
-def create_new_teacher(client, school_id):
+def create_teacher(client, school_id):
     # Send request to create a teacher account for school
     client.post(
         "/api/auth/register",
@@ -123,7 +130,7 @@ def create_new_teacher(client, school_id):
     return {"user": teacher, "token": response.json["token"]}
 
 
-def create_new_owner(client, school_id):
+def create_owner(client, school_id):
     # Send request to create a teacher account for school
     client.post(
         "/api/auth/register",
@@ -171,3 +178,46 @@ def create_class(client, user, academic_year):
     ).first()
 
     return school_class
+
+
+def create_student(client, user, school_class):
+    client.post(
+        f"api/student/class/{school_class.id}",
+        json={
+            "name": "Ama Yeboah",
+            "date_of_birth": datetime(2011, 1, 1),
+        },
+        headers={"Authorization": f"Bearer {user['token']}"},
+    )
+
+    student = Student.query.filter_by(
+        name="Ama Yeboah", date_of_birth=datetime(2011, 1, 1)
+    ).first()
+
+    return student
+
+
+def create_expenditure(client, user, academic_year):
+    client.post(
+        f"api/expenditure/academic_year/{academic_year.id}",
+        json={"description": "Bought some boxes of chalk", "amount": 500.00},
+        headers={"Authorization": f"Bearer {user['token']}"},
+    )
+
+    expenditure = Expenditure.query.filter_by(
+        description="Bought some boxes of chalk", amount=500.00
+    ).first()
+
+    return expenditure
+
+
+def create_fee(client, user, student):
+    client.post(
+        f"api/fees/student/{student.id}",
+        json={"amount": 120.00},
+        headers={"Authorization": f"Bearer {user['token']}"},
+    )
+
+    fee = Fees.query.filter_by(amount=120.00, student_id=student.id).first()
+
+    return fee
