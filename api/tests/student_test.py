@@ -1,5 +1,6 @@
 from datetime import datetime
 from api.tests.utils_test import (
+    create_multiple_students,
     create_student,
     db_reset,
     create_academic_year,
@@ -314,10 +315,7 @@ def test_student_delete_by_id_unauthorized(app, client):
     )
 
     assert response.status_code == 401
-    assert (
-        response.json["message"]
-        == "User does not have the right priveleges to perform specified actions"
-    )
+    assert response.json["message"] == "User is not authorized to delete student"
 
 
 # ------------------------------------------------------------------
@@ -386,5 +384,35 @@ def test_student_get_all_by_class_id_unauthorized(app, client):
     assert response.status_code == 401
     assert (
         response.json["message"]
-        == "User does not have the right priveleges to perform specified actions"
+        == "User is not authorized to get all students in a class"
     )
+
+
+def test_student_search_by_name(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    owner = create_owner(client, school_id=school.id)
+
+    # Create an academic year
+    academic_year = create_academic_year(client, super_user, school)
+
+    # Create a class
+    school_class = create_class(client, super_user, academic_year)
+
+    # Create multiple students student
+    create_multiple_students(client, super_user, school_class)
+
+    response = client.get(
+        f"api/student/class/{school_class.id}/search?name=elm",
+        headers={"Authorization": f"Bearer {owner['token']}"},
+    )
+
+    assert response.status_code == 200

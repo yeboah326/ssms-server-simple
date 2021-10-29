@@ -25,7 +25,7 @@ def create_school(client, super_user_token):
     """Creates an instance of school"""
 
     client.post(
-        "api/school/create",
+        "api/school",
         json={"name": "Rachael Shilo School Complex", "location": "Accra"},
         headers={"Authorization": f"Bearer {super_user_token}"},
     )
@@ -58,7 +58,7 @@ def create_super_user(app, client):
     return {"user": super_user, "token": response.json["token"]}
 
 
-def create_new_admin(client, school_id):
+def create_admin(client, school_id):
     # Create and store user
     client.post(
         "/api/auth/register",
@@ -82,7 +82,7 @@ def create_new_admin(client, school_id):
     return {"user": admin, "token": response.json["token"]}
 
 
-def create_new_auditor(client, school_id):
+def create_auditor(client, school_id):
     # Create the user to be stored
     reponse = client.post(
         "/api/auth/register",
@@ -168,8 +168,8 @@ def create_academic_year(client, user, school):
 
 def create_class(client, user, academic_year):
     client.post(
-        "api/school/class",
-        json={"academic_year_id": academic_year.id, "class_name": "JHS 3"},
+        f"api/school/academic_year/{academic_year.id}/class",
+        json={"class_name": "JHS 3"},
         headers={"Authorization": f"Bearer {user['token']}"},
     )
 
@@ -195,6 +195,31 @@ def create_student(client, user, school_class):
     ).first()
 
     return student
+
+
+def create_multiple_students(client, user, school_class) -> None:
+    names = [
+        "Eve Koch",
+        "Jervis Conen",
+        "Gertrud Bonanno",
+        "Darla Sear",
+        "Lewiss Cookson",
+        "Aimee McAlpine",
+        "Gerianne Musterd",
+        "Bill Bazley",
+        "Elmo Surgood",
+        "Perry Wauchope",
+    ]
+
+    for i in range(len(names)):
+        client.post(
+            f"api/student/class/{school_class.id}",
+            json={
+                "name": f"{names[i]}",
+                "date_of_birth": datetime(2011, 1, 1),
+            },
+            headers={"Authorization": f"Bearer {user['token']}"},
+        )
 
 
 def create_expenditure(client, user, academic_year):

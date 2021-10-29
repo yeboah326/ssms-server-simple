@@ -357,7 +357,7 @@ def test_fees_get_all_student_fee_payments(app, client):
     )
 
     assert response.status_code == 200
-    assert len(response.json["expenditures"]) == 3
+    assert len(response.json["fees"]) == 3
 
 
 def test_fees_get_all_student_fee_payments_unathorized(app, client):

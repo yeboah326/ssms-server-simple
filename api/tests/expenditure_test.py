@@ -81,7 +81,7 @@ def test_expenditure_create_new_unauthorized(app, client):
     ).first()
 
     assert response.status_code == 401
-    assert response.json["message"] == "User is not authorized to create a school"
+    assert response.json["message"] == "User is not authorized to create expenditure"
     assert expenditure == None
 
 
@@ -180,7 +180,7 @@ def test_expenditure_modify_by_id_unauthorized(app, client):
     new_expenditure = Expenditure.find_by_id(expenditure.id)
 
     assert response.status_code == 401
-    assert response.json["message"] == "User is not authorized to create a school"
+    assert response.json["message"] == "User is not authorized to modify expenditure"
     assert new_expenditure.description != "Bought boxes of markers"
     assert new_expenditure.amount != 650.00
 
@@ -276,7 +276,7 @@ def test_expenditure_delete_by_id_unauthorized(app, client):
     new_expenditure = Expenditure.find_by_id(expenditure.id)
 
     assert response.status_code == 401
-    assert response.json["message"] == "User is not authorized to create an expenditure"
+    assert response.json["message"] == "User is not authorized to delete an expenditure"
 
 
 # ------------------------------------------------------------------
@@ -317,6 +317,38 @@ def test_expenditure_get_all_for_academic_year(app, client):
             "id": expenditure.id,
         }
     ]
+
+
+# TODO: Write a better test
+def test_expenditure_get_all_for_academic_year_paginate(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    owner = create_owner(client, school_id=school.id)
+
+    # Create an academic year
+    academic_year = create_academic_year(client, owner, school)
+
+    # Create five expenditures
+    for _ in range(5):
+        create_expenditure(client, owner, academic_year)
+
+    response = client.get(
+        f"api/expenditure/academic_year/{academic_year.id}?page=1&per_page=2",
+        headers={"Authorization": f"Bearer {owner['token']}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json["total_pages"] == 3
+    assert response.json["prev_page"] == None
+    assert response.json["next_page"] == 2
 
 
 def test_expenditure_get_for_academic_year_unauthorized(app, client):
