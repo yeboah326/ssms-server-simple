@@ -109,9 +109,7 @@ def student_delete_by_id(student_id):
     """
     # Check if user is a super_user, admin, owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to delete student"}, 401
 
     student = Student.find_by_id(id=student_id)
 
@@ -139,9 +137,7 @@ def student_get_all_by_class_id(class_id):
     """
     # Check if user is a super_user, admin, owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner", "admin"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to get all students in a class"}, 401
 
     school_class_students = Class.find_by_id(class_id).students
 
@@ -151,3 +147,19 @@ def student_get_all_by_class_id(class_id):
         school_class_students_json[student.id] = student.name
 
     return {"students": school_class_students_json}, 200
+
+
+@student.route("/class/<class_id>/search", methods=["GET"])
+@jwt_required()
+def student_search_by_name(class_id):
+    SEARCH_NAME = request.args.get("name")
+
+    # Check if user is a super_user, admin, owner
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner", "admin"]):
+        return {"message": "User is not authorized to perform this search"}, 401
+
+    school_class_students = Student.query.filter(
+        Student.name.ilike(f"%{SEARCH_NAME}%"), Student.class_id == class_id
+    ).all()
+
+    return {"students": school_class_students}, 200

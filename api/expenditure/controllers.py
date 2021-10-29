@@ -31,7 +31,7 @@ def expenditure_create_new(academic_year_id):
         Integer: Status Code
     """
     if not current_user_type(get_jwt_identity(), ["super_user", "admin", "owner"]):
-        return {"message": "User is not authorized to create a school"}, 401
+        return {"message": "User is not authorized to create expenditure"}, 401
 
     data = request.get_json()
 
@@ -65,7 +65,7 @@ def expenditure_modify_by_id(expenditure_id):
         Integer: Status Code
     """
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {"message": "User is not authorized to create a school"}, 401
+        return {"message": "User is not authorized to modify expenditure"}, 401
 
     data = request.get_json()
 
@@ -99,9 +99,7 @@ def expenditure_delete_by_id(expenditure_id):
         Integer: Status Code
     """
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {"message": "User is not authorized to create an expenditure"}, 401
-
-    data = request.get_json()
+        return {"message": "User is not authorized to delete an expenditure"}, 401
 
     expenditure = Expenditure.find_by_id(expenditure_id)
 
@@ -120,6 +118,10 @@ def expenditure_delete_by_id(expenditure_id):
 def expenditure_get_all_for_academic_year(academic_year_id):
     """expenditure_get_all_for_academic_year
 
+    Query Args:
+        page: the current page number for the items
+        per_page: the number of items per page
+
     Args:
         academic_year_id (Integer): ID for academic year
 
@@ -130,9 +132,22 @@ def expenditure_get_all_for_academic_year(academic_year_id):
     if not current_user_type(get_jwt_identity(), ["super_user", "admin", "owner"]):
         return {"message": "User is not authorized to retrieve expenditure"}, 401
 
-    expenditures = AcademicYear.find_by_id(academic_year_id).expenditures
+    PAGE = int(request.args.get("page")) if request.args.get("page") != None else 1
+    PER_PAGE = (
+        int(request.args.get("per_page")) if request.args.get("per_page") != None else 5
+    )
 
-    return {"expenditures": expenditures}, 200
+    expenditures = Expenditure.query.filter_by(
+        academic_year_id=academic_year_id
+    ).paginate(page=PAGE, per_page=PER_PAGE)
+    # expenditures = AcademicYear.find_by_id(academic_year_id).expenditures.paginate(page=1,per_page=4)
+
+    return {
+        "expenditures": expenditures.items,
+        "total_pages": expenditures.pages,
+        "prev_page": expenditures.prev_num,
+        "next_page": expenditures.next_num,
+    }, 200
 
 
 @expenditure.route("/<expenditure_id>", methods=["GET"])

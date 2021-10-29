@@ -140,6 +140,6 @@ def fees_get_all_student_fee_payments(student_id):
             "message": "User is not authorized to retrieve student fee payment"
         }, 401
 
-    fees = Student.find_by_id(student_id).fees
+    student = Student.find_by_id(student_id)
 
-    return {"expenditures": fees}, 200
+    return {"fees": student.fees, "student_name": student.name}, 200

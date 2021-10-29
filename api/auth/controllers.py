@@ -8,6 +8,7 @@ from flask_jwt_extended import (
 from flask_jwt_extended.utils import get_jwt
 from api import db
 from api.auth.models import SchoolUser, SuperUser, User
+from api.auth.utils import current_user_type
 
 auth = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -20,11 +21,17 @@ def hello():
 @auth.route("/token", methods=["POST"])
 def auth_create_new_token():
     """auth_create_new_token
+
+    Authorized User:
+        all
+
     API Data Format:
-        username: Username of the user trying to login
-        password: Password of the user trying to login
+        username (String): Username of the user trying to login
+        password (String): Password of the user trying to login
+
     Returns:
-        [type]: [description]
+        dict: Response body
+        Integer: Status Code
     """
     data = request.json
 
@@ -35,11 +42,27 @@ def auth_create_new_token():
         if password_correct:
             access_token = create_access_token(identity=user.public_id)
             return {"token": access_token, "user_id": user.public_id}, 200
-        return {"message": "Username or password is invalid"}, 401
+        return {"message": "Username or password is invalid"}, 400
 
 
 @auth.route("/register", methods=["POST"])
 def auth_create_new_user_account():
+    """auth create_new_user_account
+
+    Authorized User:
+        super_user
+
+    API Data Format:
+        user_type (String): the type of user to be created i.e. teacher, admin, auditor, owner
+        username (String): the username of the user to be created
+        password (String): the password of the user to be created
+        email (String): the email of the user to be created
+        school_id (Integer): the ID of the school the new user belongs to
+
+    Returns:
+        dict: Response body
+        Integer: Status Code
+    """
     data = request.json
 
     user_type = data["user_type"]
@@ -47,7 +70,7 @@ def auth_create_new_user_account():
     email_exists = User.find_by_email(data["email"])
 
     if email_exists:
-        return {"message": "A user with this email already exists"}, 401
+        return {"message": "A user with this email already exists"}, 400
 
     # Assign the user type to the temporary instance created
     if user_type == "super_user":
@@ -111,10 +134,10 @@ def auth_create_new_user_account():
 @auth.route("/protected")
 @jwt_required()
 def protected():
-    if not SuperUser.user_is_super_user(public_id=get_jwt_identity()):
+    if not current_user_type(get_jwt_identity(), ["super_user"]):
         return {
             "message": "User does not have the right priveleges to perform specified actions"
-        }
+        }, 401
     users = User.query.all()
     user_list = []
     for user in users:

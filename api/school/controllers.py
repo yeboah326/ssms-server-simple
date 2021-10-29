@@ -8,7 +8,7 @@ from api.school.models import School, AcademicYear, Class
 school = Blueprint("school", __name__, url_prefix="/api/school")
 
 
-@school.route("/hello")
+@school.route("/hello", methods=["GET"])
 def school_hello():
     return {"message": "School hello route"}, 200
 
@@ -18,10 +18,13 @@ def school_hello():
 # ---------------------------------#
 # ENDPOINT: School                #
 # ---------------------------------#
-@school.route("/create", methods=["POST"])
+@school.route("", methods=["POST"])
 @jwt_required()
 def school_create():
     """school_create
+
+    Authorized User:
+        super_user
 
     API Data Format:
         name: Name of school to be created
@@ -33,7 +36,7 @@ def school_create():
     """
 
     if not current_user_type(get_jwt_identity(), ["super_user"]):
-        return {"message": "User is not authorized to create a school"}
+        return {"message": "User is not authorized to create a school"}, 401
 
     data = request.json
 
@@ -41,7 +44,7 @@ def school_create():
     school_exists = School.find_by_name(data["name"])
 
     if school_exists:
-        return {"message": "A school with that name already exists"}, 401
+        return {"message": "A school with that name already exists"}, 400
 
     # Create an instance of the school model
     school = School(name=data["name"], location=data["location"])
@@ -53,13 +56,15 @@ def school_create():
 
 
 # TODO: Check the user type before performing the operation
-@school.route("/modify", methods=["POST"])
+@school.route("/<school_id>", methods=["PUT"])
 @jwt_required()
-def school_modify_by_id():
+def school_modify_by_id(school_id):
     """school_modify_by_id
 
+    Authorized User:
+        super_user
+
     API Data Format:
-        id: ID of the current school to be changed
         new_name: Name to be assigned to the current school
         new_location: Location to be assigned to current school
 
@@ -67,48 +72,57 @@ def school_modify_by_id():
         dict: Response body
         Integer: Status Code
     """
+
+    if not current_user_type(get_jwt_identity(), ["super_user"]):
+        return {"message": "User is not authorized to modify school"}, 401
+
     data = request.json
 
     # Check if the school exists
-    school_exists = School.find_by_id(data["id"])
+    school_exists = School.find_by_id(school_id)
     if not school_exists:
         return {"message": "A school with the given ID does not exist"}, 404
 
     # Check if a school with the new name exists
     school_with_new_name_exists = School.find_by_name(data["new_name"])
     if school_with_new_name_exists:
-        return {"message": "A school with that name already exists"}, 401
+        return {"message": "A school with that name already exists"}, 400
 
-    school = School.find_by_id(data["id"])
+    school = School.find_by_id(school_id)
 
     if data["new_name"]:
         school.name = data["new_name"]
     if data["new_location"]:
-        school.locatioon = data["new_location"]
+        school.location = data["new_location"]
 
     db.session.commit()
 
     return {"message": "School updated successfully"}, 200
 
 
-@school.route("/delete", methods=["POST"])
+@school.route("/<school_id>", methods=["DELETE"])
 @jwt_required()
-def school_delete_by_id():
+def school_delete_by_id(school_id):
     """school_delete_by_id
 
-    API Data Format:
+    Authorized User:
+        super_user
+
+    Args:
         id: ID of school to be deleted
 
     Returns:
         dict: Response body
         Integer: Status Code
     """
-    data = request.json
+
+    if not current_user_type(get_jwt_identity(), ["super_user"]):
+        return {"message": "User is not authorized to delete a school"}, 401
 
     # Check if the school exists
-    school_exists = School.find_by_id(data["id"])
+    school_exists = School.find_by_id(school_id)
     if not school_exists:
-        return {"message": "A school with the given ID does not exist"}, 401
+        return {"message": "A school with the given ID does not exist"}, 404
 
     # Delete school
     db.session.delete(school_exists)
@@ -120,12 +134,16 @@ def school_delete_by_id():
 # -------------------------------------------------------
 
 # ---------------------------------#
-# ENDPOINT: Academic Year         #
+# ENDPOINT: Academic Year          #
 # ---------------------------------#
 @school.route("/academic_year", methods=["POST"])
 @jwt_required()
 def school_create_academic_year():
     """school_create_academic_year
+
+    Authorized User:
+        super_user
+        owner
 
     API Data Format:
         name: String
@@ -135,13 +153,11 @@ def school_create_academic_year():
         dict: Response body
         Integer: Status Code
     """
-    data = request.json
-
     # Check whether user is super_user or owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to create an academic year"}, 401
+
+    data = request.json
 
     # Creating new instance of academic year
     academic_year = AcademicYear(name=data["name"], school_id=data["school_id"])
@@ -153,28 +169,29 @@ def school_create_academic_year():
     return {"message": "Academic year created successfully"}, 200
 
 
-@school.route("/academic_year", methods=["DELETE"])
+@school.route("/academic_year/<academic_year_id>", methods=["DELETE"])
 @jwt_required()
-def school_delete_academic_year():
+def school_delete_academic_year(academic_year_id):
     """school_delete_academic_year
 
-    API Data Format:
+    Authorized User:
+        super_user
+        owner
+
+    Args:
         academic_year_id: Integer
 
     Returns:
         dict: Response body
         Integer: Status Code
     """
-    data = request.json
 
     # Check whether user is super_user or owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to delete academic year"}, 401
 
     # Find the academic year
-    academic_year = AcademicYear.find_by_id(academic_year_id=data["academic_year_id"])
+    academic_year = AcademicYear.find_by_id(academic_year_id)
 
     # Error message if the academic year does not exist
     if not academic_year:
@@ -187,10 +204,14 @@ def school_delete_academic_year():
     return {"message": "Academic year deleted successfully"}, 200
 
 
-@school.route("/academic_year", methods=["PUT"])
+@school.route("/academic_year/<academic_year_id>", methods=["PUT"])
 @jwt_required()
-def school_modify_academic_year():
+def school_modify_academic_year(academic_year_id):
     """school_modify_academic_year
+
+    Authorized User:
+        super_user
+        owner
 
     API Data Format:
         academic_year_id: Integer
@@ -204,12 +225,10 @@ def school_modify_academic_year():
 
     # Check whether user is super_user or owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to modify an academic year"}, 401
 
     # Find the academic year
-    academic_year = AcademicYear.find_by_id(academic_year_id=data["academic_year_id"])
+    academic_year = AcademicYear.find_by_id(academic_year_id=academic_year_id)
 
     # Error message if the academic year does not exist
     if not academic_year:
@@ -221,35 +240,33 @@ def school_modify_academic_year():
     return {"message": "Academic year updated successfully"}, 200
 
 
-@school.route("/academic_year", methods=["GET"])
+@school.route("<school_id>/academic_year", methods=["GET"])
 @jwt_required()
-def school_get_all_academic_years():
-    # Retrieve the logged in user
-    school_user = SchoolUser.find_by_public_id(public_id=get_jwt_identity())
+def school_get_all_academic_years(school_id):
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner", "admin"]):
+        return {"message": "User is not authorized to retrieve all academic years"}, 401
 
     # Retrieve the academic years of the logged in user
-    academic_years = School.find_by_id(id=school_user.school_id).academic_years
+    academic_years = School.find_by_id(id=school_id).academic_years
 
-    academic_years_json = {}
-
-    for academic_year in academic_years:
-        academic_years_json[academic_year.id] = academic_year.name
-
-    return {"academic_years": academic_years_json}, 200
+    return {"academic_years": academic_years}, 200
 
 
 # -------------------------------------------------------
 
 # ---------------------------------#
-# ENDPOINT: Class                 #
+# ENDPOINT: Class                  #
 # ---------------------------------#
-@school.route("/class", methods=["POST"])
+@school.route("academic_year/<academic_year_id>/class", methods=["POST"])
 @jwt_required()
-def school_create_class():
+def school_create_class(academic_year_id):
     """school_create_class
 
+    Authorized User:
+        super_user
+        owner
+
     API Data Format:
-        academic_year_id: Integer
         class_name: String
 
     Returns:
@@ -260,14 +277,10 @@ def school_create_class():
 
     # Check whether user is super_user or owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to create a class"}, 401
 
     # Create new instance of school class
-    school_class = Class(
-        name=data["class_name"], academic_year_id=data["academic_year_id"]
-    )
+    school_class = Class(name=data["class_name"], academic_year_id=academic_year_id)
 
     db.session.add(school_class)
     db.session.commit()
@@ -275,12 +288,16 @@ def school_create_class():
     return {"message": "Class created successfully"}, 200
 
 
-@school.route("/class", methods=["DELETE"])
+@school.route("/class/<class_id>", methods=["DELETE"])
 @jwt_required()
-def school_delete_class():
+def school_delete_class(class_id):
     """school_delete_class
 
-    API Data Format:
+    Authorized Users:
+        super_user
+        owner
+
+    Args:
         class_id: Integer
 
     Returns:
@@ -291,12 +308,10 @@ def school_delete_class():
 
     # Check whether user is super_user or owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to delete a class"}, 401
 
     # Find the existing class model
-    school_class = Class.find_by_id(id=data["class_id"])
+    school_class = Class.find_by_id(id=class_id)
 
     if not school_class:
         return {"message": "Class does not exist"}, 404
@@ -307,13 +322,19 @@ def school_delete_class():
     return {"message": "Class deleted successfully"}, 200
 
 
-@school.route("/class", methods=["PUT"])
+@school.route("/class/<class_id>", methods=["PUT"])
 @jwt_required()
-def school_modify_class():
+def school_modify_class(class_id):
     """school_modify_class
 
-    API Data Format:
+    Authorized Users:
+        super_user
+        owner
+
+    Args:
         class_id: Integer
+
+    API Data Format:
         new_class_name: String
 
     Returns:
@@ -324,12 +345,10 @@ def school_modify_class():
 
     # Check whether user is super_user or owner
     if not current_user_type(get_jwt_identity(), ["super_user", "owner"]):
-        return {
-            "message": "User does not have the right priveleges to perform specified actions"
-        }, 401
+        return {"message": "User is not authorized to modify a class"}, 401
 
     # Find the existing class model
-    school_class = Class.find_by_id(id=data["class_id"])
+    school_class = Class.find_by_id(id=class_id)
 
     if not school_class:
         return {"message": "Class does not exist"}, 404
@@ -345,6 +364,23 @@ def school_modify_class():
 @school.route("academic_year/<academic_year_id>/class", methods=["GET"])
 @jwt_required()
 def school_get_all_class(academic_year_id):
+    """school_get_all_class
+
+    Authorized Users:
+        super_user
+        owner
+        admin
+
+    Args:
+        academic_year_id: Integer
+
+
+    Returns:
+        dict: Response body
+        Integer: Status Code
+    """
+    if not current_user_type(get_jwt_identity(), ["super_user", "owner", "admin"]):
+        return {"message": "User is not authorized to retrieve all classes"}, 401
 
     academic_year = AcademicYear.find_by_id(academic_year_id)
 
@@ -353,12 +389,7 @@ def school_get_all_class(academic_year_id):
 
     classes = academic_year.classes
 
-    classes_json = {}
-
-    for school_class in classes:
-        classes_json[school_class.id] = school_class.name
-
-    return {"academic_year": academic_year.name, "classes": classes_json}, 200
+    return {"academic_year": academic_year.name, "classes": classes}, 200
 
 
 # -------------------------------------------------------

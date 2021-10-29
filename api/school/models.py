@@ -1,4 +1,5 @@
 from api import db
+from dataclasses import dataclass
 
 
 class School(db.Model):
@@ -26,7 +27,12 @@ class School(db.Model):
         return cls.query.filter_by(id=id).first().expenditures
 
 
+@dataclass
 class AcademicYear(db.Model):
+    id: int
+    name: str
+    school_id: int
+
     __tablename__ = "ssms_academic_year"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
@@ -34,15 +40,17 @@ class AcademicYear(db.Model):
     classes = db.relationship("Class", backref="academic_year", lazy=True)
     expenditures = db.relationship("Expenditure", backref="academic_year", lazy=True)
 
-    def __repr__(self) -> str:
-        return f"<School: {School.find_by_id(self.school_id).name}, Year: {self.name}>"
-
     @classmethod
     def find_by_id(cls, academic_year_id):
         return cls.query.filter_by(id=academic_year_id).first()
 
 
+@dataclass
 class Class(db.Model):
+    id: int
+    name: str
+    academic_year_id: int
+
     __tablename__ = "ssms_class"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)

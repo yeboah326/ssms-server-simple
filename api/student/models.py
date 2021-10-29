@@ -1,7 +1,15 @@
 from api import db
+from dataclasses import dataclass
+import datetime
 
 
+@dataclass
 class Student(db.Model):
+    id: int
+    name: str
+    date_of_birth: datetime.datetime
+    class_id: int
+
     __tablename__ = "ssms_student"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
