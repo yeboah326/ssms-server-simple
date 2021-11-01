@@ -6,7 +6,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATABASE_TEST = os.getenv("DATABASE_TEST_URL")
+# Taking of SQLAlchemy 1.4+ compatibility issues on Heroku
+if DATABASE_TEST.startswith("postgres://"):
+    DATABASE_TEST = DATABASE_TEST.replace("postgres://", "postgresql://", 1)
+
 DATABASE_PROD = os.getenv("DATABASE_URL")
+# Taking of SQLAlchemy 1.4+ compatibility issues on Heroku
+if DATABASE_PROD.startswith("postgres://"):
+    DATABASE_PROD = DATABASE_PROD.replace("postgres://", "postgresql://", 1)
 
 
 class Config:
