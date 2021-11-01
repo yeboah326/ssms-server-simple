@@ -1,42 +1,71 @@
 from os import getenv
 from flask import Flask
 from flask_cors import CORS
-from flask_migrate import Migrate
+from flask_migrate import Migrate, migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
 
-# Application instance
-app = Flask(__name__)
-env_config = getenv("APP_SETTINGS", "api.config.DevelopmentConfig")
-app.config.from_object(env_config)
 
-# CORS instance
-cors = CORS(app)
+load_dotenv()
+cors = CORS()
+migrate = Migrate()
+jwt = JWTManager()
 
-# Database instance
-db = SQLAlchemy(app, session_options={"expire_on_commit": False})
+# Initializing database instance
+db = SQLAlchemy(session_options={"expire_on_commit": False})
 
-# Migrate instance
-migrate = Migrate(app, db)
 
-# JWT Configurations
-jwt = JWTManager(app)
+def select_env(env_config: str) -> str:
+    """Returns a specific environment confguration
 
-# Import blueprints
-from api.auth.controllers import auth
-from api.expenditure.controllers import expenditure
-from api.school.controllers import school
-from api.student.controllers import student
-from api.fees.controllers import fees
+    Args:
+        env_config (str): ['prod'. 'dev', 'test']
 
-# Registering the blueprints
-app.register_blueprint(auth)
-app.register_blueprint(expenditure)
-app.register_blueprint(school)
-app.register_blueprint(student)
-app.register_blueprint(fees)
+    Returns:
+        config: A string representation of the environment
+    """
+    env_configs = {"prod": "ProductionConfig", "test": "TestingConfig"}
+    return env_configs[env_config]
 
-# Endpoint for handling invalid requests
-@app.errorhandler(404)
-def page_not_found(error):
-    return {"message": "Request does not exist"}
+
+def register_blueprints(app):
+    from api.auth.controllers import auth
+    from api.expenditure.controllers import expenditure
+    from api.school.controllers import school
+    from api.student.controllers import student
+    from api.fees.controllers import fees
+
+    app.register_blueprint(auth)
+    app.register_blueprint(expenditure)
+    app.register_blueprint(school)
+    app.register_blueprint(student)
+    app.register_blueprint(fees)
+
+    # Endpoint for handling invalid requests
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return {"message": "Request does not exist"}
+
+
+def create_app(env_config: str):
+    # Create a new application instance
+    app = Flask(__name__)
+    # Load environment configurations
+    ENV_CONFIG = getenv("APP_SETTINGS", f"api.config.{select_env(env_config)}")
+    app.config.from_object(ENV_CONFIG)
+
+    register_blueprints(app)
+
+    cors.init_app(app)
+
+    # Database instance
+    db.init_app(app)
+
+    # Migrate instance
+    migrate.init_app(app, db)
+
+    # JWT Configurations
+    jwt.init_app(app)
+
+    return app
