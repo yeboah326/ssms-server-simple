@@ -1,7 +1,9 @@
 from flask.cli import FlaskGroup
-from api import db
+from api import app, db
 from api.auth.models import SuperUser
-cli = FlaskGroup()
+
+cli = FlaskGroup(app)
+
 
 @cli.command("create_su")
 def create_db():
@@ -11,10 +13,11 @@ def create_db():
     username = input("Username: ")
     password = input("Password: ")
     email = input("Email: ")
-    user = SuperUser(name=name, username=username,email=email)
+    user = SuperUser(name=name, username=username, email=email)
     user.password = password
     db.session.add(user)
     db.session.commit()
 
-if __name__== "__main__":
+
+if __name__ == "__main__":
     cli()
