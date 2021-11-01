@@ -35,3 +35,8 @@ app.register_blueprint(expenditure)
 app.register_blueprint(school)
 app.register_blueprint(student)
 app.register_blueprint(fees)
+
+# Endpoint for handling invalid requests
+@app.errorhandler(404)
+def page_not_found(error):
+    return {"message": "Request does not exist"}
