@@ -1,9 +1,12 @@
 """Configuration for development, testing and production"""
 import os
+from dotenv import load_dotenv
+
+# Loading virtual environment variables
+load_dotenv()
 
 DATABASE_TEST = os.getenv("DATABASE_TEST_URL")
-DATABASE_DEV = os.getenv("DATABASE_URL")
-DATABASE_PROD = os.getenv("DATABASE_PROD_URL")
+DATABASE_PROD = os.getenv("DATABASE_URL")
 
 
 class Config:
@@ -20,23 +23,7 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = DATABASE_TEST
 
 
-class DevelopmentConfig(Config):
-    """Development Configuration"""
-
-    SQLALCHEMY_DATABASE_URI = DATABASE_DEV
-
-
 class ProductionConfig(Config):
     """Production Configuration"""
 
     SQLALCHEMY_DATABASE_URI = DATABASE_PROD
-
-
-ENV_CONFIG_DICT = dict(
-    development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig
-)
-
-
-def get_config(config_name):
-    """Retrieve environment configuration settings."""
-    return ENV_CONFIG_DICT.get(config_name, ProductionConfig)
