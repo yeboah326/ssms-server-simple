@@ -1,9 +1,12 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import func
 from api import db
 from api.student.models import Student
 from api.fees.models import Fees
+from api.school.models import Class
 from api.auth.utils import current_user_type
+from api.student.utils import check_student_paid_fees_in_full
 
 fees = Blueprint("fees", __name__, url_prefix="/api/fees")
 
@@ -45,6 +48,13 @@ def fees_create_new_payment(student_id):
     db.session.add(fee)
     db.session.commit()
 
+    # Check whether student has paid fees in full
+    student = Student.find_by_id(student_id)
+    student.fees_paid_in_full = check_student_paid_fees_in_full(student_id)[
+        "paid_in_full"
+    ]
+    db.session.commit()
+
     return {"message": "Fee payment created successfully"}, 200
 
 
@@ -83,6 +93,13 @@ def fees_modify_payment_by_id(fee_id):
 
     db.session.commit()
 
+    # Check whether student has paid fees in full
+    student = Student.find_by_id(fee.student_id)
+    student.fees_paid_in_full = check_student_paid_fees_in_full(fee.student_id)[
+        "paid_in_full"
+    ]
+    db.session.commit()
+
     return {"message": "Fee payment updated successfully"}, 200
 
 
@@ -114,6 +131,13 @@ def fees_delete_payment_by_id(fee_id):
     db.session.delete(fee)
     db.session.commit()
 
+    # Check whether student has paid fees in full
+    student = Student.find_by_id(fee.student_id)
+    student.fees_paid_in_full = check_student_paid_fees_in_full(fee.student_id)[
+        "paid_in_full"
+    ]
+    db.session.commit()
+
     return {"message": "Fee payment deleted successfully"}, 200
 
 
@@ -142,4 +166,11 @@ def fees_get_all_student_fee_payments(student_id):
 
     student = Student.find_by_id(student_id)
 
-    return {"fees": student.fees, "student_name": student.name}, 200
+    student_info = check_student_paid_fees_in_full(student_id)
+
+    return {
+        "fees": student.fees,
+        "student": student,
+        "total_amount_paid": student_info["fees_paid"],
+        "total_amount_to_be_paid": student_info["fees_to_be_paid"],
+    }, 200
