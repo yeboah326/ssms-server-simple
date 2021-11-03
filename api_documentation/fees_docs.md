@@ -172,7 +172,9 @@
 <pre>
 {
     "fees": List[Fees],
-    "student_name": String
+    "student": Student,
+    "total_amount_paid": Float,
+    "total_amount_to_be_paid": Float
 }
 </pre>
 
