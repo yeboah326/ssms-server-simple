@@ -50,10 +50,12 @@ class Class(db.Model):
     id: int
     name: str
     academic_year_id: int
+    fees_to_be_paid: float
 
     __tablename__ = "ssms_class"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
+    fees_to_be_paid = db.Column(db.Float, default=100, nullable=False)
     academic_year_id = db.Column(
         db.Integer, db.ForeignKey("ssms_academic_year.id"), nullable=False
     )

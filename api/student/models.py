@@ -9,6 +9,7 @@ class Student(db.Model):
     name: str
     date_of_birth: datetime.datetime
     class_id: int
+    fees_paid_in_full: bool
 
     __tablename__ = "ssms_student"
     id = db.Column(db.Integer, primary_key=True)
@@ -16,6 +17,7 @@ class Student(db.Model):
     date_of_birth = db.Column(db.Date(), nullable=True)
     class_id = db.Column(db.Integer, db.ForeignKey("ssms_class.id"), nullable=False)
     fees = db.relationship("Fees", backref="student", lazy=True)
+    fees_paid_in_full = db.Column(db.Boolean, default=False)
 
     @classmethod
     def find_by_id(cls, id):
