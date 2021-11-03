@@ -10,6 +10,7 @@ from api.tests.utils_test import (
     db_reset,
 )
 from api.fees.models import Fees
+from datetime import datetime
 
 
 def test_fees_hello(app, client):
@@ -92,6 +93,35 @@ def test_fees_create_new_payment_unathorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to create fee payment"
     assert fee == None
+
+
+def test_fees_check_fee_payments(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    owner = create_owner(client, school_id=school.id)
+
+    # Create an academic year
+    academic_year = create_academic_year(client, owner, school)
+
+    # Create a class
+    school_class = create_class(client, owner, academic_year)
+
+    # Create student
+    student = create_student(client, owner, school_class)
+
+    # Make three fee payments
+    for i in range(3):
+        create_fee(client, owner, student)
+
+    assert student.fees_paid_in_full == True
 
 
 # ------------------------------------------------------------------
@@ -356,8 +386,18 @@ def test_fees_get_all_student_fee_payments(app, client):
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
+    # date_of_birth = response.json["student"]["date_of_birth"]
     assert response.status_code == 200
     assert len(response.json["fees"]) == 3
+    assert response.json["total_amount_paid"] == 360.0
+    assert response.json["total_amount_to_be_paid"] == school_class.fees_to_be_paid
+    # assert response.json["student"] == {
+    #     'class_id': school_class.id,
+    #     'date_of_birth': datetime(date_of_birth.year, date_of_birth.month, date_of_birth.day),
+    #     'fees_paid_in_full': True,
+    #     'id': student.id,
+    #     'name': student.name
+    # }
 
 
 def test_fees_get_all_student_fee_payments_unathorized(app, client):

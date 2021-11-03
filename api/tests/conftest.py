@@ -4,7 +4,7 @@ from api import create_app, db as _db
 
 @pytest.fixture
 def app():
-    flask_app = create_app("test")
+    flask_app = create_app("prod")
     flask_app.app_context().push()
     yield flask_app
 
