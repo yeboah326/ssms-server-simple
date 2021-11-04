@@ -341,7 +341,7 @@ def test_expenditure_get_all_for_academic_year_paginate(app, client):
         create_expenditure(client, owner, academic_year)
 
     response = client.get(
-        f"api/expenditure/academic_year/{academic_year.id}?page=1&per_page=2",
+        f"api/expenditure/academic_year/{academic_year.id}?page=1&per_page=2&month=11",
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
@@ -349,6 +349,7 @@ def test_expenditure_get_all_for_academic_year_paginate(app, client):
     assert response.json["total_pages"] == 3
     assert response.json["prev_page"] == None
     assert response.json["next_page"] == 2
+    assert response.json["total_month_expenditure"] == 2500.0
 
 
 def test_expenditure_get_for_academic_year_unauthorized(app, client):
