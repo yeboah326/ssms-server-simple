@@ -131,6 +131,33 @@ def school_delete_by_id(school_id):
     return {"message": "School deleted successfully"}, 200
 
 
+@school.route("/<school_id>", methods=["GET"])
+@jwt_required()
+def school_get_by_id(school_id):
+    if not current_user_type(
+        get_jwt_identity(), ["super_user", "admin", "owner", "teacher", "auditor"]
+    ):
+        return {"message": "User is not authorized to retrieve a school"}, 401
+
+    school = School.find_by_id(school_id)
+
+    if not school:
+        return {"message": "School not found"}, 404
+
+    return {"school": school}, 200
+
+
+@school.route("/", methods=["GET"])
+@jwt_required()
+def school_get_all():
+    if not current_user_type(get_jwt_identity(), ["super_user"]):
+        return {"message": "User is not authorized to retrieve all school"}, 401
+
+    schools = School.query.all()
+
+    return {"schools": schools}, 200
+
+
 # -------------------------------------------------------
 
 # ---------------------------------#
