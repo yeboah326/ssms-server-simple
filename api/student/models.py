@@ -7,7 +7,7 @@ import datetime
 class Student(db.Model):
     id: int
     name: str
-    date_of_birth: datetime.datetime
+    date_of_birth: datetime.date
     class_id: int
     fees_paid_in_full: bool
 
