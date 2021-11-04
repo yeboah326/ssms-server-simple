@@ -2,7 +2,12 @@ from api import db
 from dataclasses import dataclass
 
 
+@dataclass
 class School(db.Model):
+    id: int
+    name: str
+    location: str
+
     __tablename__ = "ssms_school"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), nullable=False, unique=True)

@@ -1,6 +1,7 @@
 from uuid import uuid4
 from api import db
 from werkzeug.security import check_password_hash, generate_password_hash
+from dataclasses import dataclass
 
 
 class User(db.Model):
@@ -49,7 +50,13 @@ class User(db.Model):
         return cls.query.filter_by(username=username, password=password)
 
 
+@dataclass
 class SuperUser(User):
+    public_id: int
+    name: str
+    username: str
+    role: str
+
     __tablename__ = "ssms_superuser"
     id = db.Column(
         db.Integer, db.ForeignKey("ssms_user.id"), primary_key=True, autoincrement=True
@@ -65,7 +72,14 @@ class SuperUser(User):
         )
 
 
+@dataclass
 class SchoolUser(User):
+    public_id: int
+    name: str
+    username: str
+    role: str
+    school_id: int
+
     __tablename__ = "ssms_schooluser"
     id = db.Column(
         db.Integer, db.ForeignKey("ssms_user.id"), primary_key=True, autoincrement=True
