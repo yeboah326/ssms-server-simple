@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import extract, func
 from api import db
 from api.school.models import AcademicYear
 from api.expenditure.models import Expenditure
@@ -121,6 +122,7 @@ def expenditure_get_all_for_academic_year(academic_year_id):
     Query Args:
         page: the current page number for the items
         per_page: the number of items per page
+        month: the month of the year
 
     Args:
         academic_year_id (Integer): ID for academic year
@@ -136,14 +138,28 @@ def expenditure_get_all_for_academic_year(academic_year_id):
     PER_PAGE = (
         int(request.args.get("per_page")) if request.args.get("per_page") != None else 5
     )
+    MONTH = int(request.args.get("month")) if request.args.get("month") != None else 1
 
-    expenditures = Expenditure.query.filter_by(
-        academic_year_id=academic_year_id
-    ).paginate(page=PAGE, per_page=PER_PAGE)
-    # expenditures = AcademicYear.find_by_id(academic_year_id).expenditures.paginate(page=1,per_page=4)
+    # Query when month has been provided as part of the query parameters
+    expenditures = (
+        db.session.query(Expenditure)
+        .filter(
+            extract("month", Expenditure.date_created) == MONTH,
+            Expenditure.academic_year_id == academic_year_id,
+        )
+        .paginate(page=PAGE, per_page=PER_PAGE)
+    )
+
+    total_expenditure_sum_month = db.session.query(
+        func.sum(Expenditure.amount).filter(
+            extract("month", Expenditure.date_created) == MONTH,
+            Expenditure.academic_year_id == academic_year_id,
+        )
+    ).all()[0][0]
 
     return {
         "expenditures": expenditures.items,
+        "total_month_expenditure": total_expenditure_sum_month,
         "total_pages": expenditures.pages,
         "prev_page": expenditures.prev_num,
         "next_page": expenditures.next_num,
@@ -170,6 +186,3 @@ def expenditure_get_by_id(expenditure_id):
         return {"message": "Expenditure not found"}, 404
 
     return {"expenditure": expenditure}, 200
-
-
-# TODO: Search expenditure by month
