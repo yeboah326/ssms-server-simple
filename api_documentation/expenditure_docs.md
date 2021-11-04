@@ -136,7 +136,7 @@
 ### Get all expenditure for academic year
 **Request**
 
-`GET api/expenditure/academic_year/{academic_year_id}?page={current_page}&per_page={items_per_page}`
+`GET api/expenditure/academic_year/{academic_year_id}?page={current_page}&per_page={items_per_page}&month={month_number}`
 
 **Authorized Users**
 
@@ -151,6 +151,7 @@
 <pre>
 {
     "expenditures": List[Expenditure],
+    "toal_month_expenditure": Float,
     "total_page": Integer,
     "prev_page": Integer,
     "next_page": Integer
