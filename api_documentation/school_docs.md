@@ -171,6 +171,90 @@
 
 #
 
+### Get school by id
+**Request**
+
+`GET api/school/{school_id}`
+
+**Authorized Users**
+
+`super_user, owner, admin, teacher, auditor`
+
+
+**Response**
+
+`SUCCESS: 200 OK`
+
+**Response Body**
+<pre>
+{
+    "school": {
+        "id": school_id,
+        "name": school_name,
+        "location": school_location
+    }
+}
+</pre>
+
+`ERROR: 404 NOT FOUND`
+
+**Response Body**
+<pre>
+{
+    "message": "School not found"
+}
+</pre>
+
+#
+
+### Get all schools
+**Request**
+
+`GET api/school/`
+
+**Authorized Users**
+
+`super_user`
+
+
+**Response**
+
+`SUCCESS: 200 OK`
+
+**Response Body**
+<pre>
+{
+    "schools":
+    [
+        {
+            "id": school_id,
+            "name": school_name,
+            "location": school_location
+        },
+        {
+            "id": school_id,
+            "name": school_name,
+            "location": school_location
+        },
+        {
+            "id": school_id,
+            "name": school_name,
+            "location": school_location
+        },
+
+    ]
+}
+</pre>
+
+`ERROR: 401 UNAUTHORIZED`
+
+**Response Body**
+<pre>
+{
+    "message": "User is not authorized to retrieve all schools"
+}
+</pre>#
+
 ### Create academic year
 **Request**
 

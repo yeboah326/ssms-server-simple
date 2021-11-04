@@ -26,10 +26,29 @@
 
 **Response Body**
 <pre>
+For SuperUser
 {
     "token": token,
-    "user_id": user_id
+    "user": {
+        "name": user_name,
+        "public_id": user_public_id,
+        "role": user_role,
+        "username": user_username
+    }
 }
+
+For SchoolUser
+{
+    "token": token,
+    "user": {
+        "name": user_name,
+        "public_id": user_public_id,
+        "role": user_role,
+        "school_id": user_school_id,
+        "username": user_username
+    }
+}
+
 </pre>
 
 `ERROR: 400 BAD REQUEST`
