@@ -3,6 +3,7 @@ from api.school.models import AcademicYear, School, Class
 from api.tests.utils_test import (
     create_admin,
     create_owner,
+    create_second_school,
     create_super_user,
     create_teacher,
     create_academic_year,
@@ -258,6 +259,107 @@ def test_school_delete_by_id_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "A school with the given ID does not exist"
+
+
+# --------------------------------------------------------------------
+
+
+# ---------------------------------#
+# Endpoint: school_get_by_id    #
+# ---------------------------------#
+def test_school_get_by_id(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Create school instance
+    school = create_school(client, super_user["token"])
+
+    response = client.get(
+        f"api/school/{school.id}",
+        headers={"Authorization": f"Bearer {super_user['token']}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json["school"]["name"] == school.name
+    assert response.json["school"]["id"] == school.id
+    assert response.json["school"]["location"] == school.name
+
+
+def test_school_get_by_id_non_existent(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Create school instance
+    school = create_school(client, super_user["token"])
+
+    response = client.get(
+        f"api/school/{school.id + 1}",
+        headers={"Authorization": f"Bearer {super_user['token']}"},
+    )
+
+    assert response.status_code == 404
+    assert response.json["message"] == "School not found"
+
+
+# --------------------------------------------------------------------
+
+
+# ---------------------------------#
+# Endpoint: school_get_all         #
+# ---------------------------------#
+def test_school_get_all(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Create multiple school instances
+    school = create_school(client, super_user["token"])
+    second_school = create_second_school(client, super_user["token"])
+
+    response = client.get(
+        f"api/school/", headers={"Authorization": f"Bearer {super_user['token']}"}
+    )
+
+    assert response.status_code == 200
+    assert response.json["schools"][0] == {
+        "id": school.id,
+        "location": school.location,
+        "name": school.name,
+    }
+    assert response.json["schools"][1] == {
+        "id": second_school.id,
+        "location": second_school.location,
+        "name": second_school.name,
+    }
+
+
+def test_school_get_all_unauthorized(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Create school instance
+    school = create_school(client, super_user["token"])
+
+    # Create new teacher
+    teacher = create_teacher(client, school.id)
+
+    response = client.get(
+        f"api/school/", headers={"Authorization": f"Bearer {teacher['token']}"}
+    )
+
+    assert response.status_code == 401
+    assert response.json["message"] == "User is not authorized to retrieve a school"
 
 
 # --------------------------------------------------------------------

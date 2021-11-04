@@ -173,8 +173,10 @@ def test_auth_create_token_super_user(app, client):
 
     assert response.status_code == 200
     assert response.json["token"]
-    assert response.json["user_id"] == super_user["user"].public_id
-    assert response.json["role"] == "super_user"
+    assert response.json["user"]["name"] == super_user["user"].name
+    assert response.json["user"]["role"] == super_user["user"].role
+    assert response.json["user"]["public_id"] == super_user["user"].public_id
+    assert response.json["user"]["username"] == super_user["user"].username
 
 
 def test_auth_create_token_teacher(app, client):
@@ -196,5 +198,7 @@ def test_auth_create_token_teacher(app, client):
 
     assert response.status_code == 200
     assert response.json["token"]
-    assert response.json["user_id"] == teacher["user"].public_id
-    assert response.json["role"] == "teacher"
+    assert response.json["user"]["name"] == teacher["user"].name
+    assert response.json["user"]["role"] == teacher["user"].role
+    assert response.json["user"]["public_id"] == teacher["user"].public_id
+    assert response.json["user"]["username"] == teacher["user"].username

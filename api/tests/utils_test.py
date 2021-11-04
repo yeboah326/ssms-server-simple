@@ -35,6 +35,20 @@ def create_school(client, super_user_token):
     return school
 
 
+def create_second_school(client, super_user_token):
+    """Creates an instance of school"""
+
+    client.post(
+        "api/school",
+        json={"name": "Abossey Okai Methodist JHS", "location": "Abossey Okai"},
+        headers={"Authorization": f"Bearer {super_user_token}"},
+    )
+
+    school = School.find_by_name("Abossey Okai Methodist JHS")
+
+    return school
+
+
 def create_super_user(app, client):
     # Create and store user
     client.post(
