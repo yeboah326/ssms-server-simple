@@ -1,6 +1,7 @@
 """Configuration for development, testing and production"""
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Loading virtual environment variables
 load_dotenv()
@@ -20,6 +21,7 @@ class Config:
     """Base Configuration"""
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
