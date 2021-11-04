@@ -40,15 +40,15 @@ def auth_create_new_token():
     if user:
         password_correct = user.check_password(data["password"])
         if password_correct:
+            access_token = create_access_token(identity=user.public_id)
             # Finding the type of user logging in
             school_user = SchoolUser.find_by_public_id(user.public_id)
+            super_user = SuperUser.find_by_public_id(user.public_id)
             if school_user != None:
-                role = school_user.role
+                return {"token": access_token, "user": school_user}, 200
             else:
-                role = "super_user"
+                return {"token": access_token, "user": super_user}, 200
 
-            access_token = create_access_token(identity=user.public_id)
-            return {"token": access_token, "user_id": user.public_id, "role": role}, 200
         return {"message": "Username or password is invalid"}, 400
 
 
