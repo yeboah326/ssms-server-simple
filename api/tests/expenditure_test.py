@@ -9,6 +9,7 @@ from api.tests.utils_test import (
     create_school,
     db_reset,
 )
+import datetime
 
 
 def test_expenditure_hello(app, client):
@@ -304,19 +305,15 @@ def test_expenditure_get_all_for_academic_year(app, client):
     expenditure = create_expenditure(client, owner, academic_year)
 
     response = client.get(
-        f"api/expenditure/academic_year/{academic_year.id}",
+        f"api/expenditure/academic_year/{academic_year.id}?month=13",
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
     assert response.status_code == 200
-    assert response.json["expenditures"] == [
-        {
-            "academic_year_id": academic_year.id,
-            "amount": expenditure.amount,
-            "description": expenditure.description,
-            "id": expenditure.id,
-        }
-    ]
+    assert response.json["expenditures"][0]["academic_year_id"] == academic_year.id
+    assert response.json["expenditures"][0]["amount"] == expenditure.amount
+    assert response.json["expenditures"][0]["description"] == expenditure.description
+    assert response.json["expenditures"][0]["id"] == expenditure.id
 
 
 # TODO: Write a better test
@@ -340,8 +337,10 @@ def test_expenditure_get_all_for_academic_year_paginate(app, client):
     for _ in range(5):
         create_expenditure(client, owner, academic_year)
 
+    current_month = datetime.datetime.today().month
+
     response = client.get(
-        f"api/expenditure/academic_year/{academic_year.id}?page=1&per_page=2&month=11",
+        f"api/expenditure/academic_year/{academic_year.id}?page=1&per_page=2&month={current_month}",
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
@@ -410,12 +409,10 @@ def test_expenditure_get_by_id(app, client):
     )
 
     assert response.status_code == 200
-    assert response.json["expenditure"] == {
-        "academic_year_id": academic_year.id,
-        "amount": expenditure.amount,
-        "description": expenditure.description,
-        "id": expenditure.id,
-    }
+    assert response.json["expenditure"]["academic_year_id"] == academic_year.id
+    assert response.json["expenditure"]["amount"] == expenditure.amount
+    assert response.json["expenditure"]["description"] == expenditure.description
+    assert response.json["expenditure"]["id"] == expenditure.id
 
 
 def test_expenditure_get_by_id_non_existent(app, client):

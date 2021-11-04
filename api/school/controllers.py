@@ -151,7 +151,7 @@ def school_get_by_id(school_id):
 @jwt_required()
 def school_get_all():
     if not current_user_type(get_jwt_identity(), ["super_user"]):
-        return {"message": "User is not authorized to retrieve all school"}, 401
+        return {"message": "User is not authorized to retrieve all schools"}, 401
 
     schools = School.query.all()
 

@@ -285,7 +285,7 @@ def test_school_get_by_id(app, client):
     assert response.status_code == 200
     assert response.json["school"]["name"] == school.name
     assert response.json["school"]["id"] == school.id
-    assert response.json["school"]["location"] == school.name
+    assert response.json["school"]["location"] == school.location
 
 
 def test_school_get_by_id_non_existent(app, client):
@@ -359,7 +359,7 @@ def test_school_get_all_unauthorized(app, client):
     )
 
     assert response.status_code == 401
-    assert response.json["message"] == "User is not authorized to retrieve a school"
+    assert response.json["message"] == "User is not authorized to retrieve all schools"
 
 
 # --------------------------------------------------------------------
@@ -940,9 +940,10 @@ def test_school_get_all_class(app, client):
 
     assert response.status_code == 200
     assert response.json["academic_year"] == academic_year.name
-    assert response.json["classes"] == [
-        {"academic_year_id": academic_year.id, "id": school_class.id, "name": "JHS 3"}
-    ]
+    assert response.json["classes"][0]["academic_year_id"] == academic_year.id
+    assert response.json["classes"][0]["fees_to_be_paid"] == 100.0
+    assert response.json["classes"][0]["name"] == school_class.name
+    assert response.json["classes"][0]["id"] == school_class.id
 
 
 def test_school_get_all_class_unauthorized(app, client):

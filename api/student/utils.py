@@ -19,6 +19,7 @@ def check_student_paid_fees_in_full(student_id: int) -> bool:
     fees_paid = db.session.query(
         func.sum(Fees.amount).filter(Fees.student_id == student_id)
     ).all()[0][0]
+    fees_paid = fees_paid if fees_paid != None else 0
     paid_in_full = True if fees_paid >= fees_to_be_paid else False
 
     return {
