@@ -1,5 +1,10 @@
 from api.auth.models import SchoolUser, SuperUser
-from api.tests.utils_test import db_reset, create_school, create_super_user
+from api.tests.utils_test import (
+    db_reset,
+    create_school,
+    create_super_user,
+    create_teacher,
+)
 
 
 def test_auth_hello(client):
@@ -153,3 +158,43 @@ def test_auth_create_owner(app, client):
     assert response.status_code == 200
     assert response.json["message"] == "User created successfully"
     assert user.email == "owner_u@user.com"
+
+
+def test_auth_create_token_super_user(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    response = client.post(
+        "api/auth/token", json={"username": "super_u", "password": "123456"}
+    )
+
+    assert response.status_code == 200
+    assert response.json["token"]
+    assert response.json["user_id"] == super_user["user"].public_id
+    assert response.json["role"] == "super_user"
+
+
+def test_auth_create_token_teacher(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    teacher = create_teacher(client, school_id=school.id)
+
+    response = client.post(
+        "api/auth/token", json={"username": "teacher_u", "password": "123456"}
+    )
+
+    assert response.status_code == 200
+    assert response.json["token"]
+    assert response.json["user_id"] == teacher["user"].public_id
+    assert response.json["role"] == "teacher"
