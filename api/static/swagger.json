@@ -1,0 +1,129 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sophisticated School Management System API",
+    "description": "An API developed for the SSMS platform",
+    "version": "1.0.0",
+    "contact": {
+      "email": "asanteg36@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Expenditure"
+    },
+    {
+      "name": "Fees"
+    },
+    {
+      "name": "School"
+    },
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Student"
+    }
+  ],
+  "paths": {
+    "/auth/hello": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Returns message if hello blueprint route is working",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/message"
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": ["Create a new super user"],
+        "requestBody": {
+          "description": "SuperUser Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": [
+                  "#/components/schemas/SuperUser",
+                  "#/components/schemas/SchoolUser"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": "#/components/schemas/message"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "message": {
+        "properties": {
+          "string": {
+            "type": "string"
+          }
+        }
+      },
+      "SuperUser": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "user_type": {
+            "type": "string"
+          }
+        }
+      },
+      "SchoolUser": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    }
+  }
+}
