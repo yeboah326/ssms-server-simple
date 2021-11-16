@@ -679,17 +679,19 @@ def test_school_create_class(app, client):
 
     response = client.post(
         f"api/school/academic_year/{academic_year.id}/class",
-        json={"class_name": "JHS 3"},
+        json={"class_name": "JHS 3", "fees_to_be_paid": 100},
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
-    school_class = Class.query.filter_by(
+    school_class: Class = Class.query.filter_by(
         name="JHS 3", academic_year_id=academic_year.id
     ).first()
 
     assert response.status_code == 200
     assert response.json["message"] == "Class created successfully"
     assert school_class != None
+    assert school_class.fees_to_be_paid == 100
+    assert school_class.name == "JHS 3"
 
 
 def test_school_create_class_unauthorized(app, client):

@@ -186,3 +186,35 @@
     "message": "User is not authorized to retrieve student fee payment"
 }
 </pre>
+
+
+
+#
+
+### Get all class students fee payment
+**Request**
+
+`GET api/fees/students/{class_id}`
+
+**Authorized Users**
+
+`super_user, admin, owner`
+
+**Response**
+
+`SUCCESS: 200 OK`
+
+**Response Body**
+<pre>
+{
+    "students": [
+        {
+            'class_id': int,
+            'date_of_birth': Date,
+            'fees_paid_in_full': Boolean,
+            'id': int,
+            'name': str
+        }
+    ]
+}
+</pre>

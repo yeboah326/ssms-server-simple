@@ -295,6 +295,7 @@ def school_create_class(academic_year_id):
 
     API Data Format:
         class_name: String
+        fees_to_be_paid: Float
 
     Returns:
         dict: Response body
@@ -307,7 +308,11 @@ def school_create_class(academic_year_id):
         return {"message": "User is not authorized to create a class"}, 401
 
     # Create new instance of school class
-    school_class = Class(name=data["class_name"], academic_year_id=academic_year_id)
+    school_class = Class(
+        name=data["class_name"],
+        academic_year_id=academic_year_id,
+        fees_to_be_paid=data["fees_to_be_paid"],
+    )
 
     db.session.add(school_class)
     db.session.commit()
@@ -382,6 +387,9 @@ def school_modify_class(class_id):
 
     if data["new_class_name"]:
         school_class.name = data["new_class_name"]
+
+    if data["new_fees"]:
+        school_class.name = data["new_fees"]
 
     db.session.commit()
 

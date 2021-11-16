@@ -174,3 +174,21 @@ def fees_get_all_student_fee_payments(student_id):
         "total_amount_paid": student_info["fees_paid"],
         "total_amount_to_be_paid": student_info["fees_to_be_paid"],
     }, 200
+
+
+# TODO: Get all fee payments for class
+@fees.route("/students/<class_id>", methods=["GET"])
+@jwt_required()
+def fees_get_all_students_fee_payments(class_id):
+    if not current_user_type(get_jwt_identity(), ["super_user", "admin", "owner"]):
+        return {
+            "message": "User is not authorized to retrieve student fee payment"
+        }, 401
+
+    school_class = Class.find_by_id(class_id)
+
+    class_students = school_class.students
+
+    if len(class_students) == 0:
+        return {"message": "There are no students in class"}
+    return {"students": class_students}

@@ -180,10 +180,10 @@ def create_academic_year(client, user, school):
     return academic_year
 
 
-def create_class(client, user, academic_year):
+def create_class(client, user, academic_year, fees_to_be_paid: float):
     client.post(
         f"api/school/academic_year/{academic_year.id}/class",
-        json={"class_name": "JHS 3"},
+        json={"class_name": "JHS 3", "fees_to_be_paid": fees_to_be_paid},
         headers={"Authorization": f"Bearer {user['token']}"},
     )
 

@@ -432,3 +432,35 @@ def test_fees_get_all_student_fee_payments_unathorized(app, client):
         response.json["message"]
         == "User is not authorized to retrieve student fee payment"
     )
+
+
+def test_fees_get_all_students_fee_payments(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    owner = create_owner(client, school_id=school.id)
+
+    # Create an academic year
+    academic_year = create_academic_year(client, super_user, school)
+
+    # Create a class
+    school_class = create_class(client, super_user, academic_year, 500)
+
+    # Create student
+    student = create_student(client, super_user, school_class)
+
+    response = client.get(
+        f"api/fees/students/{school_class.id}",
+        headers={"Authorization": f"Bearer {owner['token']}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json["students"]
+    assert len(response.json["students"]) == 1

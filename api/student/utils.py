@@ -5,7 +5,7 @@ from api.school.models import Class
 from api.student.models import Student
 
 
-def check_student_paid_fees_in_full(student_id: int) -> bool:
+def check_student_paid_fees_in_full(student_id: int):
     """Checks whether the student has paid in full after payment
 
     Args:

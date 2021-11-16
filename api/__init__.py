@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate, migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from flask_swagger_ui import get_swaggerui_blueprint
 from dotenv import load_dotenv
 
 
@@ -27,6 +28,16 @@ def select_env(env_config: str) -> str:
     """
     env_configs = {"prod": "ProductionConfig", "test": "TestingConfig"}
     return env_configs[env_config]
+
+
+def add_swagger_config(app: Flask):
+    SWAGGER_URL = "/docs"
+    API_URL = "/static/swagger.json"
+    SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+        SWAGGER_URL, API_URL, config={"app_name": "Work Monitor API"}
+    )
+
+    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 
 def register_blueprints(app):
@@ -56,6 +67,8 @@ def create_app(env_config: str):
     app.config.from_object(ENV_CONFIG)
 
     register_blueprints(app)
+
+    add_swagger_config(app)
 
     cors.init_app(app)
 

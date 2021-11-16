@@ -430,7 +430,8 @@
 **Request Body**
 <pre>
 {
-    "class_name": String
+    "class_name": String,
+    "fees_to_be_paid": Float
 }
 </pre>
 
