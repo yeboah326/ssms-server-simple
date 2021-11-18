@@ -546,7 +546,7 @@
 
 #
 
-### Get all academic years
+### Get all classes
 **Request**
 
 `GET api/school/academic_year/{academic_year_id}/class`
