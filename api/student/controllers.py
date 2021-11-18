@@ -141,12 +141,7 @@ def student_get_all_by_class_id(class_id):
 
     school_class_students = Class.find_by_id(class_id).students
 
-    school_class_students_json = {}
-
-    for student in school_class_students:
-        school_class_students_json[student.id] = student.name
-
-    return {"students": school_class_students_json}, 200
+    return {"students": school_class_students}, 200
 
 
 @student.route("/class/<class_id>/search", methods=["GET"])
