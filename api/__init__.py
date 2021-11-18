@@ -56,7 +56,7 @@ def register_blueprints(app):
     # Endpoint for handling invalid requests
     @app.errorhandler(404)
     def page_not_found(error):
-        return {"message": "Request does not exist"}
+        return {"message": "Request does not exist"}, 404
 
 
 def create_app(env_config: str):
