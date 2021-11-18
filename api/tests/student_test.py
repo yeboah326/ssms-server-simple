@@ -42,7 +42,7 @@ def test_student_create_new(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.post(
         f"api/student/class/{school_class.id}",
@@ -82,7 +82,7 @@ def test_student_create_new_unauthorized(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.post(
         f"api/student/class/{school_class.id}",
@@ -122,7 +122,7 @@ def test_student_modify_by_id(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create a student
     student = create_student(client, owner, school_class)
@@ -161,7 +161,7 @@ def test_student_modify_by_id_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create a student
     student = create_student(client, owner, school_class)
@@ -196,7 +196,7 @@ def test_student_modify_by_id_unauthorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create a student
     student = create_student(client, super_user, school_class)
@@ -239,7 +239,7 @@ def test_student_delete_by_id(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create a student
     student = create_student(client, owner, school_class)
@@ -273,7 +273,7 @@ def test_student_delete_by_id_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create a student
     student = create_student(client, owner, school_class)
@@ -304,7 +304,7 @@ def test_student_delete_by_id_unauthorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create a student
     student = create_student(client, super_user, school_class)
@@ -340,7 +340,7 @@ def test_student_get_all_by_class_id(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create a student
     student = create_student(client, owner, school_class)
@@ -351,7 +351,10 @@ def test_student_get_all_by_class_id(app, client):
     )
 
     assert response.status_code == 200
-    assert response.json["students"] == {f"{student.id}": f"{student.name}"}
+    assert response.json["students"][0]["class_id"] == school_class.id
+    assert response.json["students"][0]["fees_paid_in_full"] == False
+    assert response.json["students"][0]["id"] == student.id
+    assert response.json["students"][0]["name"] == student.name
 
 
 def test_student_get_all_by_class_id_unauthorized(app, client):
@@ -371,7 +374,7 @@ def test_student_get_all_by_class_id_unauthorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create a student
     student = create_student(client, super_user, school_class)
@@ -405,7 +408,7 @@ def test_student_search_by_name(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create multiple students student
     create_multiple_students(client, super_user, school_class)

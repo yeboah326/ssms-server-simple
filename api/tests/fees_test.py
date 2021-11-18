@@ -42,7 +42,7 @@ def test_fees_create_new_payment(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
@@ -77,7 +77,7 @@ def test_fees_create_new_payment_unathorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create student
     student = create_student(client, super_user, school_class)
@@ -112,13 +112,13 @@ def test_fees_check_fee_payments(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
 
-    # Make three fee payments
-    for i in range(3):
+    # Make five fee payments
+    for i in range(5):
         create_fee(client, owner, student)
 
     assert student.fees_paid_in_full == True
@@ -146,7 +146,7 @@ def test_fees_modify_payment_by_id(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
@@ -184,7 +184,7 @@ def test_fees_modify_payment_by_id_unathorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create student
     student = create_student(client, super_user, school_class)
@@ -222,7 +222,7 @@ def test_fees_modify_payment_by_id_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
@@ -262,7 +262,7 @@ def test_fees_delete_payment_by_id(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
@@ -298,7 +298,7 @@ def test_fees_delete_payment_by_id_unathorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create student
     student = create_student(client, super_user, school_class)
@@ -334,7 +334,7 @@ def test_fees_delete_payment_by_id_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
@@ -372,7 +372,7 @@ def test_fees_get_all_student_fee_payments(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     # Create student
     student = create_student(client, owner, school_class)
@@ -417,7 +417,7 @@ def test_fees_get_all_student_fee_payments_unathorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     # Create student
     student = create_student(client, super_user, school_class)

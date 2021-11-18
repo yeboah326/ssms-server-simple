@@ -742,7 +742,7 @@ def test_school_delete_class(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.delete(
         f"api/school/class/{school_class.id}",
@@ -775,7 +775,7 @@ def test_school_delete_class_unauthorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     response = client.delete(
         f"api/school/class/{school_class.id}",
@@ -803,7 +803,7 @@ def test_school_delete_class_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.delete(
         f"api/school/class/{school_class.id  + 1}",
@@ -819,6 +819,7 @@ def test_school_delete_class_non_existent(app, client):
 # ------------------------------------------#
 # ENDPOINT: school_delete_class            #
 # ------------------------------------------#
+# TODO: Fix issues with this test
 def test_school_modify_class(app, client):
     # Reset the database
     db_reset()
@@ -836,18 +837,18 @@ def test_school_modify_class(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.put(
         f"api/school/class/{school_class.id}",
-        json={"new_class_name": "Kindergarten 1"},
+        json={"new_class_name": "Kindergarten 1", "new_fees": 600},
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
     school_class = Class.query.filter_by(
-        name="Kindergarten 1", academic_year_id=academic_year.id
+        name="Kindergarten 1", academic_year_id=academic_year.id, fees_to_be_paid=600
     ).first()
-
+    print(school_class)
     assert response.status_code == 200
     assert response.json["message"] == "Class modified successfully"
     assert school_class != None
@@ -870,7 +871,7 @@ def test_school_modify_class_unauthorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     response = client.put(
         f"api/school/class/{school_class.id}",
@@ -899,7 +900,7 @@ def test_school_modify_class_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.put(
         f"api/school/class/{school_class.id + 1}",
@@ -933,7 +934,7 @@ def test_school_get_all_class(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.get(
         f"api/school/academic_year/{academic_year.id}/class",
@@ -943,7 +944,7 @@ def test_school_get_all_class(app, client):
     assert response.status_code == 200
     assert response.json["academic_year"] == academic_year.name
     assert response.json["classes"][0]["academic_year_id"] == academic_year.id
-    assert response.json["classes"][0]["fees_to_be_paid"] == 100.0
+    assert response.json["classes"][0]["fees_to_be_paid"] == 500.0
     assert response.json["classes"][0]["name"] == school_class.name
     assert response.json["classes"][0]["id"] == school_class.id
 
@@ -965,7 +966,7 @@ def test_school_get_all_class_unauthorized(app, client):
     academic_year = create_academic_year(client, super_user, school)
 
     # Create a class
-    school_class = create_class(client, super_user, academic_year)
+    school_class = create_class(client, super_user, academic_year, 500)
 
     response = client.get(
         f"api/school/academic_year/{academic_year.id}/class",
@@ -993,7 +994,7 @@ def test_school_get_all_class_non_existent(app, client):
     academic_year = create_academic_year(client, owner, school)
 
     # Create a class
-    school_class = create_class(client, owner, academic_year)
+    school_class = create_class(client, owner, academic_year, 500)
 
     response = client.get(
         f"api/school/academic_year/{academic_year.id + 1}/class",

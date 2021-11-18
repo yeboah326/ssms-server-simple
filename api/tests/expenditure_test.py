@@ -348,7 +348,7 @@ def test_expenditure_get_all_for_academic_year_paginate(app, client):
     assert response.json["total_pages"] == 3
     assert response.json["prev_page"] == None
     assert response.json["next_page"] == 2
-    assert response.json["total_month_expenditure"] == 2500.0
+    assert response.json["total_expenditure"] == 2500.0
 
 
 def test_expenditure_get_for_academic_year_unauthorized(app, client):
