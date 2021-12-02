@@ -189,6 +189,4 @@ def fees_get_all_students_fee_payments(class_id):
 
     class_students = school_class.students
 
-    if len(class_students) == 0:
-        return {"message": "There are no students in class"}
     return {"students": class_students}
