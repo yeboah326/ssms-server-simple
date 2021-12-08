@@ -1,9 +1,8 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import func
 from api import db
 from api.student.models import Student
-from api.fees.models import Fees
+from api.fees.models import Fees, FeesToBePaid
 from api.school.models import Class
 from api.auth.utils import current_user_type
 from api.student.utils import check_student_paid_fees_in_full

@@ -17,7 +17,9 @@ class Expenditure(db.Model):
     amount = db.Column(db.Float, nullable=False)
     date_created = db.Column(db.Date(), default=datetime.date.today(), nullable=True)
     academic_year_id = db.Column(
-        db.Integer, db.ForeignKey("ssms_academic_year.id"), nullable=False
+        db.Integer,
+        db.ForeignKey("ssms_academic_year.id", ondelete="cascade"),
+        nullable=False,
     )
 
     @classmethod

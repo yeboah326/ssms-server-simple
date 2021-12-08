@@ -15,8 +15,16 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     date_of_birth = db.Column(db.Date(), nullable=True)
-    class_id = db.Column(db.Integer, db.ForeignKey("ssms_class.id"), nullable=False)
-    fees = db.relationship("Fees", backref="student", lazy=True)
+    class_id = db.Column(
+        db.Integer, db.ForeignKey("ssms_class.id", ondelete="cascade"), nullable=False
+    )
+    fees = db.relationship(
+        "Fees",
+        backref="student",
+        lazy=True,
+        cascade="all, delete",
+        passive_deletes=True,
+    )
     fees_paid_in_full = db.Column(db.Boolean, default=False)
 
     @classmethod

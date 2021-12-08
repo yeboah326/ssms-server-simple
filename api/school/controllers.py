@@ -4,6 +4,7 @@ from api import db
 from api.auth.utils import current_user_type
 from api.auth.models import SuperUser, SchoolUser, User
 from api.school.models import School, AcademicYear, Class
+from api.fees.models import FeesToBePaid
 
 school = Blueprint("school", __name__, url_prefix="/api/school")
 
@@ -311,10 +312,19 @@ def school_create_class(academic_year_id):
     school_class = Class(
         name=data["class_name"],
         academic_year_id=academic_year_id,
-        fees_to_be_paid=data["fees_to_be_paid"],
     )
 
     db.session.add(school_class)
+    db.session.flush()
+
+    # Create fees instance
+    fees_to_be_paid = FeesToBePaid(
+        amount=data["fees_to_be_paid"],
+        class_id=school_class.id,
+        academic_year_id=academic_year_id,
+    )
+
+    db.session.add(fees_to_be_paid)
     db.session.commit()
 
     return {"message": "Class created successfully"}, 200
@@ -348,6 +358,11 @@ def school_delete_class(class_id):
     if not school_class:
         return {"message": "Class does not exist"}, 404
 
+    # Delete all class FeesToBePaid Instances
+    # fees_to_be_paid = FeesToBePaid.find_fees_to_be_paid(school_class.academic_year_id, school_class.id).first()
+    # db.session.delete(fees_to_be_paid)
+
+    # Delete class instance
     db.session.delete(school_class)
     db.session.commit()
 
@@ -389,7 +404,10 @@ def school_modify_class(class_id):
         school_class.name = data["new_class_name"]
 
     if data["new_fees"]:
-        school_class.name = data["new_fees"]
+        fees_to_be_paid = FeesToBePaid.find_fees_to_be_paid(
+            school_class.academic_year_id, school_class.id
+        )
+        fees_to_be_paid.amount = data["new_fees"]
 
     db.session.commit()
 
