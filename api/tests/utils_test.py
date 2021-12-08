@@ -4,18 +4,13 @@ from api.auth.models import SchoolUser, User, SuperUser
 from api.school.models import AcademicYear, Class, School
 from api.student.models import Student
 from api.expenditure.models import Expenditure
-from api.fees.models import Fees
+from api.fees.models import Fees, FeesToBePaid
 
 
 def db_reset():
     """db_reset() - Drops all the data in all tables before the test runs"""
     SuperUser.query.delete()
     SchoolUser.query.delete()
-    Fees.query.delete()
-    Student.query.delete()
-    Class.query.delete()
-    Expenditure.query.delete()
-    AcademicYear.query.delete()
     School.query.delete()
     User.query.delete()
     db.session.commit()

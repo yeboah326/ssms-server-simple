@@ -46,6 +46,9 @@ def test_school_create_successful(app, client):
     assert response.json["message"] == f"{school.name} created successfully"
     assert school != None
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_create_unauthorized(app, client):
     # Reset the database
@@ -72,6 +75,9 @@ def test_school_create_unauthorized(app, client):
     assert response.json["message"] == "User is not authorized to create a school"
     assert school == None
 
+    # Reset the database
+    db_reset()
+
 
 def test_create_school_already_exists(app, client):
     # Reset the database
@@ -91,6 +97,9 @@ def test_create_school_already_exists(app, client):
 
     assert response.status_code == 400
     assert response.json["message"] == "A school with that name already exists"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -125,6 +134,9 @@ def test_school_modify_by_id(app, client):
     assert school.name == "Akropong School For Disabilities"
     assert school.location == "Akropong"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_modify_by_id_unauthorized(app, client):
     # Reset the database
@@ -151,6 +163,9 @@ def test_school_modify_by_id_unauthorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to modify school"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_modify_by_id_does_non_existent(app, client):
     # Reset the database
@@ -170,6 +185,9 @@ def test_school_modify_by_id_does_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "A school with the given ID does not exist"
+
+    # Reset the database
+    db_reset()
 
 
 def test_school_modify_by_id_new_name_existent(app, client):
@@ -193,6 +211,9 @@ def test_school_modify_by_id_new_name_existent(app, client):
 
     assert response.status_code == 400
     assert response.json["message"] == "A school with that name already exists"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -219,6 +240,9 @@ def test_school_delete_by_id(app, client):
     assert response.status_code == 200
     assert response.json["message"] == "School deleted successfully"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_delete_by_id_unauthorized(app, client):
     # Reset the database
@@ -241,6 +265,9 @@ def test_school_delete_by_id_unauthorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to delete a school"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_delete_by_id_non_existent(app, client):
     # Reset the database
@@ -259,6 +286,9 @@ def test_school_delete_by_id_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "A school with the given ID does not exist"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -287,6 +317,9 @@ def test_school_get_by_id(app, client):
     assert response.json["school"]["id"] == school.id
     assert response.json["school"]["location"] == school.location
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_get_by_id_non_existent(app, client):
     # Reset the database
@@ -305,6 +338,9 @@ def test_school_get_by_id_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "School not found"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -340,6 +376,9 @@ def test_school_get_all(app, client):
         "name": second_school.name,
     }
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_get_all_unauthorized(app, client):
     # Reset the database
@@ -360,6 +399,9 @@ def test_school_get_all_unauthorized(app, client):
 
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to retrieve all schools"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -393,6 +435,9 @@ def test_school_create_academic_year(app, client):
     assert response.json["message"] == "Academic year created successfully"
     assert academic_year.name == "2018/2019"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_create_academic_year_unauthorized(app, client):
     # Reset the database
@@ -417,6 +462,9 @@ def test_school_create_academic_year_unauthorized(app, client):
     assert (
         response.json["message"] == "User is not authorized to create an academic year"
     )
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -451,6 +499,9 @@ def test_school_delete_academic_year(app, client):
     assert response.json["message"] == "Academic year deleted successfully"
     assert new_academic_year == None
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_delete_academic_year_unauthorized(app, client):
     # Reset the database
@@ -476,6 +527,9 @@ def test_school_delete_academic_year_unauthorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to delete academic year"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_delete_academic_year_non_existent(app, client):
     # Reset the database
@@ -500,6 +554,9 @@ def test_school_delete_academic_year_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "Academic does not exist"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -537,6 +594,9 @@ def test_school_modify_academic_year(app, client):
     assert response.json["message"] == "Academic year updated successfully"
     assert updated_academic_year.name == "2019/2020"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_modify_academic_year_unauthorized(app, client):
     # Reset the database
@@ -567,6 +627,9 @@ def test_school_modify_academic_year_unauthorized(app, client):
         response.json["message"] == "User is not authorized to modify an academic year"
     )
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_modify_academic_year_non_existent(app, client):
     # Reset the database
@@ -594,6 +657,9 @@ def test_school_modify_academic_year_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "Academic year does not exist"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -627,6 +693,9 @@ def test_school_get_all_academic_years(app, client):
         {"id": academic_year.id, "name": academic_year.name, "school_id": school.id}
     ]
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_get_all_academic__years_unauthorized(app, client):
     # Reset the database
@@ -654,6 +723,9 @@ def test_school_get_all_academic__years_unauthorized(app, client):
         response.json["message"]
         == "User is not authorized to retrieve all academic years"
     )
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -693,6 +765,9 @@ def test_school_create_class(app, client):
     assert school_class.fees_to_be_paid == 100
     assert school_class.name == "JHS 3"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_create_class_unauthorized(app, client):
     # Reset the database
@@ -718,6 +793,9 @@ def test_school_create_class_unauthorized(app, client):
 
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to create a class"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -757,6 +835,9 @@ def test_school_delete_class(app, client):
     assert response.json["message"] == "Class deleted successfully"
     assert school_class == None
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_delete_class_unauthorized(app, client):
     # Reset the database
@@ -785,6 +866,9 @@ def test_school_delete_class_unauthorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to delete a class"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_delete_class_non_existent(app, client):
     # Reset the database
@@ -812,6 +896,9 @@ def test_school_delete_class_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "Class does not exist"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -853,6 +940,9 @@ def test_school_modify_class(app, client):
     assert response.json["message"] == "Class modified successfully"
     assert school_class != None
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_modify_class_unauthorized(app, client):
     # Reset the database
@@ -882,6 +972,9 @@ def test_school_modify_class_unauthorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to modify a class"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_modify_class_non_existent(app, client):
     # Reset the database
@@ -910,6 +1003,9 @@ def test_school_modify_class_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "Class does not exist"
+
+    # Reset the database
+    db_reset()
 
 
 # --------------------------------------------------------------------
@@ -948,6 +1044,9 @@ def test_school_get_all_class(app, client):
     assert response.json["classes"][0]["name"] == school_class.name
     assert response.json["classes"][0]["id"] == school_class.id
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_get_all_class_unauthorized(app, client):
     # Reset the database
@@ -976,6 +1075,9 @@ def test_school_get_all_class_unauthorized(app, client):
     assert response.status_code == 401
     assert response.json["message"] == "User is not authorized to retrieve all classes"
 
+    # Reset the database
+    db_reset()
+
 
 def test_school_get_all_class_non_existent(app, client):
     # Reset the database
@@ -1003,3 +1105,6 @@ def test_school_get_all_class_non_existent(app, client):
 
     assert response.status_code == 404
     assert response.json["message"] == "Academic year not found"
+
+    # Reset the database
+    db_reset()
