@@ -166,11 +166,11 @@ def create_owner(client, school_id):
 def create_academic_year(client, user, school):
     client.post(
         "api/school/academic_year",
-        json={"name": "2018/2019", "school_id": f"{school.id}"},
+        json={"name": "2018 - Term 1", "school_id": f"{school.id}"},
         headers={"Authorization": f"Bearer {user['token']}"},
     )
 
-    academic_year = AcademicYear.query.filter_by(name="2018/2019").first()
+    academic_year = AcademicYear.query.filter_by(name="2018 - Term 1").first()
 
     return academic_year
 

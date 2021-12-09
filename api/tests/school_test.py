@@ -933,10 +933,11 @@ def test_school_modify_class(app, client):
     )
 
     school_class = Class.query.filter_by(
-        name="Kindergarten 1", academic_year_id=academic_year.id, fees_to_be_paid=600
+        name="Kindergarten 1", academic_year_id=academic_year.id
     ).first()
-    print(school_class)
+
     assert response.status_code == 200
+    assert school_class.fees_to_be_paid == 600
     assert response.json["message"] == "Class modified successfully"
     assert school_class != None
 
