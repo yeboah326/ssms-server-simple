@@ -4,6 +4,8 @@ from api import db
 from api.auth.utils import current_user_type
 from api.auth.models import SuperUser, SchoolUser, User
 from api.school.models import School, AcademicYear, Class
+from api.student.models import Student
+from api.student.utils import check_student_paid_fees_in_full
 from api.fees.models import FeesToBePaid
 
 school = Blueprint("school", __name__, url_prefix="/api/school")
@@ -400,14 +402,24 @@ def school_modify_class(class_id):
     if not school_class:
         return {"message": "Class does not exist"}, 404
 
+    # Changing the class name
     if data["new_class_name"]:
         school_class.name = data["new_class_name"]
 
+    # Changing the fees paid by the class
     if data["new_fees"]:
         fees_to_be_paid = FeesToBePaid.find_fees_to_be_paid(
             school_class.academic_year_id, school_class.id
         )
-        fees_to_be_paid.amount = data["new_fees"]
+        fees_to_be_paid.first().amount = data["new_fees"]
+
+        # Check whether the fee payments of all existing students meet the new
+        # fees
+        students = Student.query.filter_by(class_id=class_id).all()
+        for student in students:
+            student.fees_paid_in_full = check_student_paid_fees_in_full(student.id)[
+                "paid_in_full"
+            ]
 
     db.session.commit()
 
