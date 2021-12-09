@@ -1,0 +1,74 @@
+{
+    "Kindergarten 1": {
+        "name": "Kindergarten 1",
+        "fees_to_be_paid": 250.00,
+        "student_list": [
+          {
+            "name": "Ivonne Lighton"
+          },
+          {
+            "name": "Helenka Mingauld"
+          },
+          {
+            "name": "Ewen Taber"
+          },
+          {
+            "name": "Land Huskisson"
+          },
+          {
+            "name": "Kristopher Kohn"
+          },
+          {
+            "name": "Cora Rossoni"
+          },
+          {
+            "name": "Brok Lambdean"
+          },
+          {
+            "name": "Delmor Spencelayh"
+          },
+          {
+            "name": "Skylar Sprackling"
+          },
+          {
+            "name": "Don Victor"
+          }
+        ]
+    },
+    "Kindergarten 2": {
+      "name": "Kindergarten 2",
+      "fees_to_be_paid": 250.0,
+      "student_list": [
+        {
+          "name": "Ezequiel Friese"
+        },
+        {
+          "name": "Maible Grishunin"
+        },
+        {
+          "name": "Zechariah Catonne"
+        },
+        {
+          "name": "Josepha Coldbathe"
+        },
+        {
+          "name": "Bessy Steggals"
+        },
+        {
+          "name": "Sky Sydes"
+        },
+        {
+          "name": "Libbi Bullough"
+        },
+        {
+          "name": "Caril Cabrera"
+        },
+        {
+          "name": "Eliot Bedow"
+        },
+        {
+          "name": "Kenneth Ragles"
+        }
+      ]
+    }
+}
