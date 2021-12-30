@@ -6,6 +6,7 @@ from api.auth.models import SuperUser, SchoolUser, User
 from api.school.models import School, AcademicYear, Class
 from api.student.models import Student
 from api.student.utils import check_student_paid_fees_in_full
+from api.expenditure.models import ExpenditureType
 from api.fees.models import FeesToBePaid
 
 school = Blueprint("school", __name__, url_prefix="/api/school")
@@ -166,9 +167,9 @@ def school_get_all():
 # ---------------------------------#
 # ENDPOINT: Academic Year          #
 # ---------------------------------#
-@school.route("/academic_year", methods=["POST"])
+@school.route("/<school_id>/academic_year", methods=["POST"])
 @jwt_required()
-def school_create_academic_year():
+def school_create_academic_year(school_id):
     """school_create_academic_year
 
     Authorized User:
@@ -177,7 +178,9 @@ def school_create_academic_year():
 
     API Data Format:
         name: String
-        school_id: Integer
+
+    Args:
+        academic_year_id: Integer
 
     Returns:
         dict: Response body
@@ -190,10 +193,25 @@ def school_create_academic_year():
     data = request.json
 
     # Creating new instance of academic year
-    academic_year = AcademicYear(name=data["name"], school_id=data["school_id"])
+    academic_year = AcademicYear(name=data["name"], school_id=school_id)
+    db.session.add(academic_year)
+    db.session.flush()
+
+    # Creating the expenditure types
+    expenditure_types = [
+        "SSNIT Tier 1",
+        "SSNIT Tier 2",
+        "Tax RTI",
+        "Tax Payee",
+        "Salary",
+        "Raw",
+    ]
+    for expenditure_type in expenditure_types:
+        db.session.add(
+            ExpenditureType(name=expenditure_type, academic_year_id=academic_year.id)
+        )
 
     # Saving the created instance
-    db.session.add(academic_year)
     db.session.commit()
 
     return {"message": "Academic year created successfully"}, 200

@@ -1,6 +1,7 @@
 from api import db
 from dataclasses import dataclass
 from api.fees.models import FeesToBePaid
+from api.student.models import Student
 
 
 @dataclass
@@ -63,8 +64,8 @@ class AcademicYear(db.Model):
         cascade="all, delete",
         passive_deletes=True,
     )
-    expenditures = db.relationship(
-        "Expenditure",
+    expenditure_types = db.relationship(
+        "ExpenditureType",
         backref="academic_year",
         lazy=True,
         cascade="all, delete",
@@ -82,6 +83,9 @@ class Class(db.Model):
     name: str
     academic_year_id: int
     fees_to_be_paid: float
+    num_students_in_class: int
+    num_students_with_arrears: int
+    num_students_fully_paid: int
 
     __tablename__ = "ssms_class"
     id = db.Column(db.Integer, primary_key=True)
@@ -120,3 +124,17 @@ class Class(db.Model):
             .first()
             .amount
         )
+
+    @property
+    def num_students_in_class(self):
+        return Student.query.filter_by(class_id=self.id).count()
+
+    @property
+    def num_students_with_arrears(self):
+        return Student.query.filter_by(
+            class_id=self.id, fees_paid_in_full=False
+        ).count()
+
+    @property
+    def num_students_fully_paid(self):
+        return Student.query.filter_by(class_id=self.id, fees_paid_in_full=True).count()
