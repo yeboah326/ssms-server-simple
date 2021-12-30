@@ -1,19 +1,26 @@
 from dataclasses import dataclass
+import datetime
 from api import db
 
 
 @dataclass
 class Fees(db.Model):
     id: int
+    date: str
     student_id: int
     amount: float
 
     __tablename__ = "ssms_fees"
     id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.Date(), default=datetime.date.today(), nullable=True)
     student_id = db.Column(
         db.Integer, db.ForeignKey("ssms_student.id", ondelete="cascade"), nullable=False
     )
     amount = db.Column(db.Float, nullable=False)
+
+    @property
+    def date(self):
+        return self.date_created.strftime("%d-%m-%Y")
 
     @classmethod
     def find_by_fee_by_id(cls, id):

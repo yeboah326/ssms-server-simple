@@ -172,6 +172,7 @@ def fees_get_all_student_fee_payments(student_id):
         "student": student,
         "total_amount_paid": student_info["fees_paid"],
         "total_amount_to_be_paid": student_info["fees_to_be_paid"],
+        "balance": student_info["fees_to_be_paid"] - student_info["fees_paid"],
     }, 200
 
 
