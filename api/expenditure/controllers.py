@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import extract, func
 from api import db
 from api.school.models import AcademicYear
-from api.expenditure.models import Expenditure
+from api.expenditure.models import Expenditure, ExpenditureType
 from api.auth.utils import current_user_type
 
 expenditure = Blueprint("expenditure", __name__, url_prefix="/api/expenditure")
@@ -14,10 +14,19 @@ def expenditure_hello():
     return {"message": "Expenditure blueprint working"}, 200
 
 
-# TODO: Create new expenditure [Admin]
-@expenditure.route("/academic_year/<academic_year_id>", methods=["POST"])
+@expenditure.route("/academic_year/<academic_year_id>/types", methods=["GET"])
 @jwt_required()
-def expenditure_create_new(academic_year_id):
+def expenditure_get_all_types(academic_year_id):
+    """expenditure_get_all_types"""
+
+    expenditure_types = ExpenditureType.find_by_academic_year_id(academic_year_id)
+
+    return {"expenditure_types": expenditure_types}, 200
+
+
+@expenditure.route("/expenditure_type/<expenditure_type_id>", methods=["POST"])
+@jwt_required()
+def expenditure_create_new(expenditure_type_id):
     """expenditure_create_new
 
     API Data Format:
@@ -25,7 +34,7 @@ def expenditure_create_new(academic_year_id):
         amount (Decimal): How much money the expenditure cost
 
     Args:
-        academic_year_id (Integer): ID for academic year
+        expenditure_type_id (Integer): ID for academic year
 
     Returns:
         dict: Response body
@@ -39,7 +48,7 @@ def expenditure_create_new(academic_year_id):
     expenditure = Expenditure(
         description=data["description"],
         amount=data["amount"],
-        academic_year_id=academic_year_id,
+        expenditure_type_id=expenditure_type_id,
     )
 
     db.session.add(expenditure)
@@ -114,10 +123,10 @@ def expenditure_delete_by_id(expenditure_id):
 
 
 # TODO: Get all expenditure
-@expenditure.route("/academic_year/<academic_year_id>", methods=["GET"])
+@expenditure.route("/expenditure_type/<expenditure_type_id>", methods=["GET"])
 @jwt_required()
-def expenditure_get_all_for_academic_year(academic_year_id):
-    """expenditure_get_all_for_academic_year
+def expenditure_get_all_by_expenditure_type_id(expenditure_type_id):
+    """expenditure_get_all_for_expenditure_type_id
 
     Query Args:
         page: the current page number for the items
@@ -125,7 +134,7 @@ def expenditure_get_all_for_academic_year(academic_year_id):
         month: the month of the year
 
     Args:
-        academic_year_id (Integer): ID for academic year
+        expenditure_type_id (Integer): ID for expenditure type
 
     Returns:
         dict: Response body
@@ -143,12 +152,12 @@ def expenditure_get_all_for_academic_year(academic_year_id):
     # Query when the month is set to 13 which represents the whole year
     if MONTH == 13:
         expenditures = Expenditure.query.filter_by(
-            academic_year_id=academic_year_id
+            expenditure_type_id=expenditure_type_id
         ).paginate(page=PAGE, per_page=PER_PAGE)
 
         total_expenditure_sum = db.session.query(
             func.sum(Expenditure.amount).filter(
-                Expenditure.academic_year_id == academic_year_id,
+                Expenditure.expenditure_type_id == expenditure_type_id,
             )
         ).all()[0][0]
 
@@ -158,7 +167,7 @@ def expenditure_get_all_for_academic_year(academic_year_id):
             db.session.query(Expenditure)
             .filter(
                 extract("month", Expenditure.date_created) == MONTH,
-                Expenditure.academic_year_id == academic_year_id,
+                Expenditure.expenditure_type_id == expenditure_type_id,
             )
             .paginate(page=PAGE, per_page=PER_PAGE)
         )
@@ -166,7 +175,7 @@ def expenditure_get_all_for_academic_year(academic_year_id):
         total_expenditure_sum = db.session.query(
             func.sum(Expenditure.amount).filter(
                 extract("month", Expenditure.date_created) == MONTH,
-                Expenditure.academic_year_id == academic_year_id,
+                Expenditure.expenditure_type_id == expenditure_type_id,
             )
         ).all()[0][0]
 
