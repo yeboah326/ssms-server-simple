@@ -14,6 +14,22 @@ from api.fees.models import FeesToBePaid
 from api.school.models import AcademicYear, Class
 from typing import List
 
+# Promotion Matrix
+promotion_matrix = {
+    "Nursery": "Kindergarten 1",
+    "Kindergarten 1": "Kindergarten 2",
+    "Kindergarten 2": "Class 1",
+    "Class 1": "Class 2",
+    "Class 2": "Class 3",
+    "Class 3": "Class 4",
+    "Class 4": "Class 5",
+    "Class 5": "Class 6",
+    "Class 6": "JHS 1",
+    "JHS 1": "JHS 2",
+    "JHS 2": "JHS 3",
+    "JHS 3": "Done",
+}
+
 
 def populate_database(student_data: dict, academic_year_id: int):
     """
@@ -80,12 +96,12 @@ def move_to_next_term(current_academic_year_id: int, new_academic_year_name: str
     classes = Class.query.filter_by(academic_year_id=current_academic_year_id).all()
 
     for school_class in classes:
-        migrate_class_to_new_academic_year(academic_year, school_class)
+        migrate_class_to_next_term(academic_year, school_class)
 
     db.session.commit()
 
 
-def migrate_class_to_new_academic_year(academic_year: AcademicYear, old_class: Class):
+def migrate_class_to_next_term(academic_year: AcademicYear, old_class: Class):
     # Create class in the new academic year
     school_class = Class(name=old_class.name, academic_year_id=academic_year.id)
 
@@ -115,3 +131,54 @@ def migrate_class_to_new_academic_year(academic_year: AcademicYear, old_class: C
         )
         db.session.add(new_student)
         db.session.flush()
+
+
+def migrate_all_classes_to_new_academic_year(current_term_id: int, new_term_name: str):
+    # Get the current academic year
+    current_academic_year = AcademicYear.find_by_id(current_term_id)
+    # Create the new term(academic_year)
+    academic_year = AcademicYear(
+        name=new_term_name, school_id=current_academic_year.school_id
+    )
+
+    # Store the term (academic year) temporarily
+    db.session.add(academic_year)
+    db.session.flush()
+
+    # Retrieve all the classes in the current academic year
+    classes = Class.query.filter_by(academic_year_id=current_term_id).all()
+
+    for school_class in classes:
+        # Create class in the new academic year
+        school_class = Class(
+            name=promotion_matrix[school_class], academic_year_id=academic_year.id
+        )
+
+        db.session.add(school_class)
+        db.session.flush()
+
+        # Create fees to be paid for the class
+        fees_to_be_paid = FeesToBePaid(
+            amount=school_class.fees_to_be_paid,
+            class_id=school_class.id,
+            academic_year_id=academic_year.id,
+        )
+
+        db.session.add(fees_to_be_paid)
+        db.session.flush()
+
+        # Migrate the students too
+        # Retrieve all students
+        students = Student.query.filter_by(class_id=school_class.id).all()
+
+        # Create new instances of students
+        for student in students:
+            new_student = Student(
+                name=student.name,
+                date_of_birth=student.date_of_birth,
+                class_id=school_class.id,
+            )
+            db.session.add(new_student)
+            db.session.flush()
+
+    db.session.commit()

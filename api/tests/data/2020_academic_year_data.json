@@ -1,0 +1,233 @@
+{
+  "Nursery": {
+    "name": "Nursery",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": " Nathaniel S . Dwamenah" },
+      { "name": " Nathaniel J . Dwamenah" },
+      { "name": " Sam Kwadwo B. Asem" },
+      { "name": " Emmanuel C . Mmaduabuchi" },
+      { "name": " Mohamed O . Mmaduabuchi" },
+      { "name": " Ramadan Abdullah" },
+      { "name": " Victory Frances" },
+      { "name": " Nyameye A . Owusu" },
+      { "name": " Precious Sarpong" },
+      { "name": " Samuella O . Agyeiwaah" },
+      { "name": " Audrey O. Owusuaah" },
+      { "name": " Paulyn O. Koranteng" },
+      { "name": " Shammima S.Haruna" },
+      { "name": " Asante Pealvina" },
+      { "name": " Nyarko Mamekwatenma" },
+      { "name": " Sampah Naadtomo" },
+      { "name": "Elizbeth Asiamah" }
+    ]
+  },
+  "Kindergarten 1": {
+    "name": "Kindergarten 1",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Boakye Moses" },
+      { "name": "Opoku Johnson" },
+      { "name": "Nwachuku Success" },
+      { "name": "Yirenkyi Charless" },
+      { "name": "Boakye Evans Adon" },
+      { "name": "Moses Qauye Ladejo" },
+      { "name": "Entsie Nyameaye" },
+      { "name": "Enock Mensah" },
+      { "name": "Koomson Richard" },
+      { "name": "Appiah Mens Emmanule" },
+      { "name": "Amoanu Kazia" },
+      { "name": "Agbassa Mirabel" },
+      { "name": "Konatey Humu" },
+      { "name": "Ladejo   K Rachel" },
+      { "name": "Dansu Agnes" },
+      { "name": "Nhyiraba Franklina Bonsu" }
+    ]
+  },
+  "Kindergarten 2": {
+    "name": "Kindergarten 2",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": " Awuni chief" },
+      { "name": " Appiah Micheal" },
+      { "name": " Issah Hamza" },
+      { "name": " Issah Hakeem Osei" },
+      { "name": " Amoanu Esther" },
+      { "name": "Rosebelia  Agyetwa" }
+    ]
+  },
+  "Class 1": {
+    "name": "Class 1",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Appiah Aaron Nyamekye" },
+      { "name": "Awuni David" },
+      { "name": "Emmanuel Enchil" },
+      { "name": "Ladejo Moses Aoom" },
+      { "name": "Frimpong Prince" },
+      { "name": "Nwachukwu Divine Favour" },
+      { "name": "Owusu Victor" },
+      { "name": "Desmond Owusu" },
+      { "name": "Aiduenu Felicity" },
+      { "name": "Akagbo Priscilla Akorfa" },
+      { "name": "Appiah Christabel" },
+      { "name": "Kumfu Regina" },
+      { "name": "Yusif Retal" }
+    ]
+  },
+  "Class 2": {
+    "name": "Class 2",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Adomah Eugene" },
+      { "name": "Appiah Alex" },
+      { "name": "Awuni Prince Samed" },
+      { "name": "Antwi Gabriel" },
+      { "name": "Asante Blessed" },
+      { "name": "Gyantoah Lawrence" },
+      { "name": "Mankoe Apraku Elisha" },
+      { "name": "Mankoe Apraku Elijah" },
+      { "name": "Sakyi Prince" },
+      { "name": "Yirenikyi Okai Raymond" },
+      { "name": "Yirenikyi Okai Roland" },
+      { "name": "Aseidu Appiah Matilda" },
+      { "name": "Afrilyie Domshie" },
+      { "name": "Gyantoabah Lawrencia" },
+      { "name": "Sackey Josephine" },
+      { "name": "Owusu Gyamfi Vanessa" },
+      { "name": "Owusu Gyamfi Valeria" },
+      { "name": "Darko Adu Grace" },
+      { "name": "Sakyi Princess" }
+    ]
+  },
+  "Class 3": {
+    "name": "Class 3",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Annobil Aaron" },
+      { "name": "Amisah Mills Seth" },
+      { "name": "Safo Kwabena" },
+      { "name": "Abbiw Afua Abigail" },
+      { "name": "Adwoa Serwaa Paulina" },
+      { "name": "Animwaa Penya Abigail" },
+      { "name": "Opoku Karen" },
+      { "name": "Asabea Adwoa" },
+      { "name": "Vondee Florence" }
+    ]
+  },
+  "Class 4": {
+    "name": "Class 4",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": " Akagbo Prince" },
+      { "name": " Amoanu Isaac" },
+      { "name": " Akyaw Penya Emmanuel" },
+      { "name": " Darko Aye Offosu Christian" },
+      { "name": " Kwaah Richeson" },
+      { "name": " Sackey Nathan" },
+      { "name": " Enchill Bright" },
+      { "name": " Kumi Randy" },
+      { "name": " Kutowu Benjamin" },
+      { "name": " Asiedu Ira" },
+      { "name": " Amoah Perpetual" },
+      { "name": "Ohemaa Aba Entsie" }
+    ]
+  },
+  "Class 5": {
+    "name": "Class 5",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Assan Naphtali" },
+      { "name": "Asante Rutherford" },
+      { "name": "David Odum" },
+      { "name": "Dzepe James" },
+      { "name": "Abdulai Issifu Junior" },
+      { "name": "Arthur Edmund" },
+      { "name": "Amina yusif" },
+      { "name": "Abbiw Offeibea" },
+      { "name": "Amirah Awuni" },
+      { "name": "Armah Janet" },
+      { "name": "Abisack Asiamah" },
+      { "name": "Appiah Angel" },
+      { "name": "Azimah Y Ibrahim" },
+      { "name": "Bamfor Emma" },
+      { "name": "Hawa Ahmed Nkrumah" },
+      { "name": " Josephine Nkrumah" },
+      { "name": " Baidoo Janet" }
+    ]
+  },
+  "Class 6": {
+    "name": "Class 6",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Abubakar Ahmed" },
+      { "name": "Amenyor Saviour" },
+      { "name": "Entsie King" },
+      { "name": "Penya Samuel" },
+      { "name": "Opoku Silas" },
+      { "name": "Wia Bernard" },
+      { "name": "Nwachwkwu Kelvin" },
+      { "name": "Adusei Rocklyn" },
+      { "name": "Alhassan Sumaiya" },
+      { "name": "Antwi Juliet" },
+      { "name": "Ajibola Ayomide" },
+      { "name": "Oye Odame" },
+      { "name": "Tawia  Vanessa" }
+    ]
+  },
+  "JHS 1": {
+    "name": "JHS 1",
+    "fees_to_be_paid": 0.0,
+
+    "student_list": [
+      { "name": "Abubire Nsoh Stanley" },
+      { "name": "Mensah Papa Amoah" },
+      { "name": "Ampadu Emmanuel" },
+      { "name": "Appiah Samuel" },
+      { "name": "Danso David" },
+      { "name": "Dokyie Padmond" },
+      { "name": "Gyan Prince" },
+      { "name": "Opey Prince" },
+      { "name": "Safo Isreal" },
+      { "name": "Suraj Bilal" },
+      { "name": "Agyemqn Ama Emmanuella" },
+      { "name": "Agyeman Akua Emmanuella" },
+      { "name": "Atua Taficatu Lamisi" },
+      { "name": "Boakye Josphine" },
+      { "name": "Dzakpasu Keziah" },
+      { "name": "Gbeve Jennifer" },
+      { "name": "Hagan Baaba Prisca" },
+      { "name": "Ibrahim Nazifat" },
+      { "name": "Kwartemaa Ezabelle" },
+      { "name": "Kyei Owusuwaa Erica" },
+      { "name": "Mills Blessing" },
+      { "name": "Mintah Freda" },
+      { "name": "Queba Babette" },
+      { "name": "Vanderpuye Sandra" },
+      { "name": "Yeboah Agyaponmaa Alice" },
+      { "name": "Mensah Justina" }
+    ]
+  },
+  "JHS 2": {
+    "name": "JHS 2",
+    "fees_to_be_paid": 0.0,
+    "student_list": [
+      { "name": "Addo Kingsley" },
+      { "name": "Asiedu Kingskid" },
+      { "name": "Boateng Richmond" },
+      { "name": "Gbeve Jerry" },
+      { "name": "Frimpong Bernard" },
+      { "name": "Abass Khadijah" },
+      { "name": "Alhassan Umaiya" },
+      { "name": "Aponsah Serwaa Vera" },
+      { "name": "Aponsah Emmanuella" },
+      { "name": "Ayikoe Doris" },
+      { "name": "Boateng Rosemary" },
+      { "name": "Marfo Tabi Lois" },
+      { "name": "Odame Grace" },
+      { "name": "Quanioo Recheal Angy" },
+      { "name": " Osei-Bonsu Annalisa" },
+      { "name": " Rahinatu Ibrahim" }
+    ]
+  }
+}

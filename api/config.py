@@ -21,7 +21,7 @@ class Config:
     """Base Configuration"""
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=4)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
