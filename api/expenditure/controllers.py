@@ -19,6 +19,9 @@ def expenditure_hello():
 def expenditure_get_all_types(academic_year_id):
     """expenditure_get_all_types"""
 
+    if not current_user_type(get_jwt_identity(), ["super_user", "admin", "owner"]):
+        return {"message": "User is not authorized to create expenditure"}, 401
+
     expenditure_types = ExpenditureType.find_by_academic_year_id(academic_year_id)
 
     return {"expenditure_types": expenditure_types}, 200

@@ -155,7 +155,7 @@
 
 #
 
-### Get all student fee payment
+### Get all student fee payments
 **Request**
 
 `GET api/fees/student/{student_id}`
@@ -174,7 +174,8 @@
     "fees": List[Fees],
     "student": Student,
     "total_amount_paid": Float,
-    "total_amount_to_be_paid": Float
+    "total_amount_to_be_paid": Float,
+    "balance": Float
 }
 </pre>
 
@@ -213,7 +214,8 @@
             'date_of_birth': Date,
             'fees_paid_in_full': Boolean,
             'id': int,
-            'name': str
+            'name': str,
+            'scholarship': Boolean
         }
     ]
 }

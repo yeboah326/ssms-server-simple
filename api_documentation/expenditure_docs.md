@@ -3,10 +3,72 @@
 
 #
 
+### Get all expenditure types
+**Request**
+
+`GET api/expenditure/academic_year/{academic_year_id}`
+
+**Authorized Users**
+
+`super_user, admin, owner`
+
+
+**Response**
+
+`SUCCESS: 200 OK`
+
+**Response Body**
+<pre>
+{
+    "expenditure_types": [
+        {
+            "academic_year_id": 1,
+            "id": 1,
+            "name": "SSNIT Tier 1"
+        },
+        {
+            "academic_year_id": 1,
+            "id": 2,
+            "name": "SSNIT Tier 2"
+        },
+        {
+            "academic_year_id": 1,
+            "id": 3,
+            "name": "Tax RTI"
+        },
+        {
+            "academic_year_id": 1,
+            "id": 4,
+            "name": "Tax Payee"
+        },
+        {
+            "academic_year_id": 1,
+            "id": 5,
+            "name": "Salary"
+        },
+        {
+            "academic_year_id": 1,
+            "id": 6,
+            "name": "Raw"
+        }
+    ]
+}
+</pre>
+
+`ERROR: 401 UNAUTHORIZED`
+
+**Response Body**
+<pre>
+{
+    "message": "User is not authorized to create expenditure"
+}
+</pre>
+
+
 ### Create expenditure
 **Request**
 
-`POST api/expenditure/academic_year/{academic_year_id}`
+`POST api/expenditure/expenditure_type/{expenditure_type_id}`
 
 **Authorized Users**
 
@@ -133,10 +195,10 @@
 
 #
 
-### Get all expenditure for academic year
+### Get all expenditure for expenditure type
 **Request**
 
-`GET api/expenditure/academic_year/{academic_year_id}?page={current_page}&per_page={items_per_page}&month={month_number}`
+`GET api/expenditure/expenditure_type/{expenditure_type_id}?page={current_page}&per_page={items_per_page}&month={month_number}`
 
 **Authorized Users**
 
