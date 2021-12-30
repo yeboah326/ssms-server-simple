@@ -39,11 +39,11 @@ def student_create_new(class_id):
     data = request.get_json()
 
     # Two instances for when the date of birth is provided or not provided
-    if data["date_of_birth"]:
+    try:
         student = Student(
             name=data["name"], date_of_birth=data["date_of_birth"], class_id=class_id
         )
-    else:
+    except KeyError:
         student = Student(name=data["name"], class_id=class_id)
 
     db.session.add(student)

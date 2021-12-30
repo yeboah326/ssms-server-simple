@@ -10,6 +10,7 @@ class Student(db.Model):
     date_of_birth: datetime.date
     class_id: int
     fees_paid_in_full: bool
+    scholarship: bool
 
     __tablename__ = "ssms_student"
     id = db.Column(db.Integer, primary_key=True)
@@ -25,7 +26,8 @@ class Student(db.Model):
         cascade="all, delete",
         passive_deletes=True,
     )
-    fees_paid_in_full = db.Column(db.Boolean, default=False)
+    fees_paid_in_full = db.Column(db.Boolean, default=False, nullable=False)
+    scholarship = db.Column(db.Boolean, default=False, nullable=False)
 
     @classmethod
     def find_by_id(cls, id):
