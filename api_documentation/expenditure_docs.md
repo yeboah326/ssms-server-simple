@@ -6,7 +6,7 @@
 ### Get all expenditure types
 **Request**
 
-`GET api/expenditure/academic_year/{academic_year_id}`
+`GET api/expenditure/academic_year/{academic_year_id}/types`
 
 **Authorized Users**
 
