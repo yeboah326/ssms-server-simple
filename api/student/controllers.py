@@ -41,7 +41,10 @@ def student_create_new(class_id):
     # Two instances for when the date of birth is provided or not provided
     try:
         student = Student(
-            name=data["name"], date_of_birth=data["date_of_birth"], class_id=class_id
+            name=data["name"],
+            date_of_birth=data["date_of_birth"],
+            class_id=class_id,
+            scholarship=data["scholarship"],
         )
     except KeyError:
         student = Student(name=data["name"], class_id=class_id)
@@ -83,12 +86,17 @@ def student_modify_by_id(student_id):
     if not student:
         return {"message": "Student does not exist"}, 404
 
-    if data["new_name"]:
-        student.name = data["new_name"]
+    try:
+        if data["new_name"]:
+            student.name = data["new_name"]
 
-    if data["new_date_of_birth"]:
-        student.date_of_birth = data["new_date_of_birth"]
-
+        if data["new_date_of_birth"]:
+            student.date_of_birth = data["new_date_of_birth"]
+        
+        if data["new_scholarship"]:
+            student.scholarship = data["new_scholarship"]
+    except KeyError:
+        pass
     db.session.commit()
 
     return {"message": "Student updated successfully"}, 200
