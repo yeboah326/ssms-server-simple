@@ -1,5 +1,5 @@
 from api.auth.models import SuperUser
-from api.expenditure.models import Expenditure
+from api.expenditure.models import Expenditure, ExpenditureType
 from api.tests.utils_test import (
     create_academic_year,
     create_expenditure,
@@ -24,6 +24,64 @@ def test_expenditure_hello(app, client):
 # -----------------------------------#
 # ENDPOINT: expenditure_create_new   #
 # -----------------------------------#
+def test_get_all_expenditure_types(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    owner = create_owner(client, school_id=school.id)
+
+    # Create an academic year
+    academic_year = create_academic_year(client, owner, school)
+
+    response = client.get(
+        f"/api/expenditure/academic_year/{academic_year.id}/types",
+        headers={"Authorization": f"Bearer {owner['token']}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json["expenditure_types"]
+    assert len(response.json["expenditure_types"]) == 6
+
+
+def test_get_all_expenditure_types_unauthorized(app, client):
+    # Reset the database
+    db_reset()
+
+    # Create new super user
+    super_user = create_super_user(app, client)
+
+    # Send request to create a new school
+    school = create_school(client, super_user["token"])
+
+    # Create new owner
+    owner = create_owner(client, school_id=school.id)
+
+    # Create an academic year
+    academic_year = create_academic_year(client, owner, school)
+
+    # Create new teacher
+    teacher = create_teacher(client, school_id=school.id)
+
+    response = client.get(
+        f"/api/expenditure/academic_year/{academic_year.id}/types",
+        headers={"Authorization": f"Bearer {teacher['token']}"},
+    )
+
+    assert response.status_code == 401
+    assert response.json["message"] == "User is not authorized to create expenditure"
+
+
+
+# -----------------------------------#
+# ENDPOINT: expenditure_create_new   #
+# -----------------------------------#
 def test_expenditure_create_new(app, client):
     # Reset the database
     db_reset()
@@ -40,8 +98,11 @@ def test_expenditure_create_new(app, client):
     # Create an academic year
     academic_year = create_academic_year(client, owner, school)
 
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
     response = client.post(
-        f"api/expenditure/academic_year/{academic_year.id}",
+        f"api/expenditure/expenditure_type/{expenditure_type.id}",
         json={"description": "Bought some boxes of chalk", "amount": 500.00},
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
@@ -71,8 +132,12 @@ def test_expenditure_create_new_unauthorized(app, client):
     # Create an academic year
     academic_year = create_academic_year(client, super_user, school)
 
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
+
     response = client.post(
-        f"api/expenditure/academic_year/{academic_year.id}",
+        f"api/expenditure/expenditure_type/{expenditure_type.id}",
         json={"description": "Bought some boxes of chalk", "amount": 500.00},
         headers={"Authorization": f"Bearer {teacher['token']}"},
     )
@@ -285,7 +350,7 @@ def test_expenditure_delete_by_id_unauthorized(app, client):
 # --------------------------------------------------#
 # ENDPOINT: expenditure_get_all_for_academic_year   #
 # --------------------------------------------------#
-def test_expenditure_get_all_for_academic_year(app, client):
+def test_expenditure_get_all_by_expenditure_type_id(app, client):
     # Reset the database
     db_reset()
 
@@ -304,20 +369,23 @@ def test_expenditure_get_all_for_academic_year(app, client):
     # Create expenditure
     expenditure = create_expenditure(client, owner, academic_year)
 
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
     response = client.get(
-        f"api/expenditure/academic_year/{academic_year.id}?month=13",
+        f"api/expenditure/expenditure_type/{expenditure_type.id}?month=13",
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
     assert response.status_code == 200
-    assert response.json["expenditures"][0]["academic_year_id"] == academic_year.id
+    assert response.json["expenditures"][0]["expenditure_type_id"] == expenditure_type.id
     assert response.json["expenditures"][0]["amount"] == expenditure.amount
     assert response.json["expenditures"][0]["description"] == expenditure.description
     assert response.json["expenditures"][0]["id"] == expenditure.id
 
 
 # TODO: Write a better test
-def test_expenditure_get_all_for_academic_year_paginate(app, client):
+def test_expenditure_get_all_by_expenditure_type_id_paginate(app, client):
     # Reset the database
     db_reset()
 
@@ -339,8 +407,11 @@ def test_expenditure_get_all_for_academic_year_paginate(app, client):
 
     current_month = datetime.datetime.today().month
 
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
     response = client.get(
-        f"api/expenditure/academic_year/{academic_year.id}?page=1&per_page=2&month={current_month}",
+        f"api/expenditure/expenditure_type/{expenditure_type.id}?page=1&per_page=2&month={current_month}",
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
@@ -351,7 +422,7 @@ def test_expenditure_get_all_for_academic_year_paginate(app, client):
     assert response.json["total_expenditure"] == 2500.0
 
 
-def test_expenditure_get_for_academic_year_unauthorized(app, client):
+def test_expenditure_get_all_by_expenditure_type_id_unauthorized(app, client):
     # Reset the database
     db_reset()
 
@@ -370,8 +441,12 @@ def test_expenditure_get_for_academic_year_unauthorized(app, client):
     # Create expenditure
     expenditure = create_expenditure(client, super_user, academic_year)
 
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
+
     response = client.get(
-        f"api/expenditure/academic_year/{academic_year.id}",
+        f"api/expenditure/expenditure_type/{expenditure_type.id}",
         headers={"Authorization": f"Bearer {teacher['token']}"},
     )
 
@@ -403,13 +478,16 @@ def test_expenditure_get_by_id(app, client):
     # Create expenditure
     expenditure = create_expenditure(client, owner, academic_year)
 
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
     response = client.get(
         f"api/expenditure/{expenditure.id}",
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
     assert response.status_code == 200
-    assert response.json["expenditure"]["academic_year_id"] == academic_year.id
+    assert response.json["expenditure"]["expenditure_type_id"] == expenditure_type.id
     assert response.json["expenditure"]["amount"] == expenditure.amount
     assert response.json["expenditure"]["description"] == expenditure.description
     assert response.json["expenditure"]["id"] == expenditure.id

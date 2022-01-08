@@ -49,16 +49,19 @@ def test_student_create_new(app, client):
         json={
             "name": "Ama Yeboah",
             "date_of_birth": datetime(2011, 1, 1),
+            "scholarship": True
         },
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
     student = Student.query.filter_by(
         name="Ama Yeboah", date_of_birth=datetime(2011, 1, 1)
-    )
+    ).first()
 
     assert response.status_code == 200
     assert response.json["message"] == "Student created successfully"
+    assert student.name == "Ama Yeboah"
+    assert student.scholarship == True
     assert student != None
 
 

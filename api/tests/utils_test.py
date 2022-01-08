@@ -3,7 +3,7 @@ from api import db
 from api.auth.models import SchoolUser, User, SuperUser
 from api.school.models import AcademicYear, Class, School
 from api.student.models import Student
-from api.expenditure.models import Expenditure
+from api.expenditure.models import Expenditure, ExpenditureType
 from api.fees.models import Fees, FeesToBePaid
 
 
@@ -165,8 +165,8 @@ def create_owner(client, school_id):
 
 def create_academic_year(client, user, school):
     client.post(
-        "api/school/academic_year",
-        json={"name": "2018 - Term 1", "school_id": f"{school.id}"},
+        f"api/school/{school.id}/academic_year",
+        json={"name": "2018 - Term 1"},
         headers={"Authorization": f"Bearer {user['token']}"},
     )
 
@@ -195,6 +195,7 @@ def create_student(client, user, school_class):
         json={
             "name": "Ama Yeboah",
             "date_of_birth": datetime(2011, 1, 1),
+            "scholarship": False
         },
         headers={"Authorization": f"Bearer {user['token']}"},
     )
@@ -232,8 +233,11 @@ def create_multiple_students(client, user, school_class) -> None:
 
 
 def create_expenditure(client, user, academic_year):
+    # Get expenditure type
+    expenditure_type = ExpenditureType.find_by_academic_year_id(academic_year.id)[0]
+
     client.post(
-        f"api/expenditure/academic_year/{academic_year.id}",
+        f"api/expenditure/expenditure_type/{expenditure_type.id}",
         json={"description": "Bought some boxes of chalk", "amount": 500.00},
         headers={"Authorization": f"Bearer {user['token']}"},
     )

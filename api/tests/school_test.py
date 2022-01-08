@@ -424,8 +424,8 @@ def test_school_create_academic_year(app, client):
     owner = create_owner(client, school_id=school.id)
 
     response = client.post(
-        "api/school/academic_year",
-        json={"name": "2018/2019", "school_id": f"{school.id}"},
+        f"api/school/{school.id}/academic_year",
+        json={"name": "2018/2019"},
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
@@ -453,8 +453,8 @@ def test_school_create_academic_year_unauthorized(app, client):
     owner = create_teacher(client, school_id=school.id)
 
     response = client.post(
-        "api/school/academic_year",
-        json={"name": "2018/2019", "school_id": f"{school.id}"},
+        f"api/school/{school.id}/academic_year",
+        json={"name": "2018/2019"},
         headers={"Authorization": f"Bearer {owner['token']}"},
     )
 
