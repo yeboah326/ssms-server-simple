@@ -42,7 +42,6 @@ def student_create_new(class_id):
     try:
         student = Student(
             name=data["name"],
-            date_of_birth=data["date_of_birth"],
             class_id=class_id,
             scholarship=data["scholarship"],
         )
