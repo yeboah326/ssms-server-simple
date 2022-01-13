@@ -28,6 +28,7 @@ def fees_create_new_payment(student_id):
 
     API Data Format:
         amount (Float): Amount in fees paid by the student
+        date_created (Date): Date the student made the payment
 
     Args:
         student_id (Integer): ID of student who is paying the fees
@@ -43,6 +44,10 @@ def fees_create_new_payment(student_id):
     data = request.get_json()
 
     fee = Fees(student_id=student_id, amount=data["amount"])
+
+    if data["date_created"]:
+        fee.date_created = data["date_created"]
+
 
     db.session.add(fee)
     db.session.commit()
@@ -89,6 +94,9 @@ def fees_modify_payment_by_id(fee_id):
 
     if data["new_amount"]:
         fee.amount = data["new_amount"]
+    
+    if data["new_date_paid"]:
+        fee.date_created = data["new_date_paid"]
 
     db.session.commit()
 
