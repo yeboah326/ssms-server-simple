@@ -159,7 +159,7 @@ def expenditure_get_all_by_expenditure_type_id(expenditure_type_id):
 
     PAGE = int(request.args.get("page")) if request.args.get("page") != None else 1
     PER_PAGE = (
-        int(request.args.get("per_page")) if request.args.get("per_page") != None else 5
+        int(request.args.get("per_page")) if request.args.get("per_page") != None else 1000
     )
     MONTH = int(request.args.get("month")) if request.args.get("month") != None else 13
 
