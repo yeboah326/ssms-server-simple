@@ -48,11 +48,19 @@ def expenditure_create_new(expenditure_type_id):
 
     data = request.get_json()
 
-    expenditure = Expenditure(
-        description=data["description"],
-        amount=data["amount"],
-        expenditure_type_id=expenditure_type_id,
-    )
+    if data["date-created"]:
+        expenditure = Expenditure(
+            description=data["description"],
+            date_created=data["date-created"],
+            amount=data["amount"],
+            expenditure_type_id=expenditure_type_id,
+        )
+    else:
+        expenditure = Expenditure(
+            description=data["description"],
+            amount=data["amount"],
+            expenditure_type_id=expenditure_type_id,
+        )
 
     db.session.add(expenditure)
     db.session.commit()
@@ -92,6 +100,9 @@ def expenditure_modify_by_id(expenditure_id):
 
     if data["new_amount"]:
         expenditure.amount = data["new_amount"]
+
+    if data["new_date_created"]:
+        expenditure.date_created = data["new_date_created"]
 
     db.session.commit()
 
